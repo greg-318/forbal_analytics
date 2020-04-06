@@ -1,7 +1,6 @@
 class Player:
     """
     :param player: [str] = Player name and surname
-    :param year: [str] = Year data
     :param position: [str] = Position
     :param appearances: [int] = Number of appearances
     :param minutes: [int] = Time spent in the game
@@ -11,6 +10,7 @@ class Player:
     :param sh90: [float] = Shorts per 90 minutes
     :param kp90: [float] = Passes led to short per 90 minutes
     :param xg: [dict] = Expected goals
+    :param npxg: [dict] = Not penalty expected Goals
     :param xa: [dict] = The sum of expected goals off shots from a player's key passes
     :param xgchain: [float] = Total xG of every possession the player is involved in
     :param xgbuildup: [float] = Total xG of every possession the player is involved in without key passes and shots
@@ -39,6 +39,7 @@ class Player:
         self.sh90 = kwargs.get("sh90", 0.0)
         self.kp90 = kwargs.get("kp90", 0.0)
         self.xg = kwargs.get("xg", {})
+        self.npxg = kwargs.get("npxg", {})
         self.xa = kwargs.get("xa", {})
         self.xgchain = kwargs.get("xgchain", 0.0)
         self.xgbuildup = kwargs.get("xgbuildup", 0.0)
@@ -65,6 +66,7 @@ class Player:
             "sh90": self.sh90,
             "kp90": self.kp90,
             "xg": self.xg,
+            "npxg": self.npxg,
             "xa": self.xa,
             "xgchain": self.xgchain,
             "xgbuildup": self.xgbuildup,

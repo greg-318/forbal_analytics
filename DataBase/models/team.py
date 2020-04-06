@@ -1,7 +1,6 @@
 class Team:
     """
     :param name: [str] = Team name
-    :param year: [str] = Year data
     :param gp: [int] = Count of matches
     :param w: [int] = Wins
     :param d: [int] = Draws
