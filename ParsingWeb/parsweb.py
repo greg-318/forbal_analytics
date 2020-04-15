@@ -9,7 +9,7 @@ def click(url):
     """
     получает ссылку на страницу и нажимает на кнопки для расскрытия всех элементов таблицы с игроками
     :param url: - прямая ссылка на страницу
-    :return: озвращает код всей старницы с раскрытой таблицей
+    :return: Возвращает код всей старницы с раскрытой таблицей
     """
 
     driver = webdriver.ChromeOptions()
@@ -40,12 +40,12 @@ def pars(html):
     """
     soup = BeautifulSoup(html, 'html.parser')
     scripts = soup.find('div', class_='players margin-top jTable')
-    if not scripts:  # без len() отправляет в return.
+    if not scripts:
         logging.warning('Table with player data not found.')
         return None
 
     table = scripts.find('tbody')
-    if not table:  # без len() отправляет в return.
+    if not table:
         logging.warning('The table with the players is empty. ')
         return None
     return table
@@ -81,9 +81,10 @@ if __name__ == '__main__':
             parser = click(http)
             if not parser:
                 continue
-            if not pars(parser):
+            soup = pars(parser)
+            if not soup:
                 continue
-            for i in pars(parser):
+            for i in soup:
                 information = Player()
                 elem = tuple(j.text for j in i)
                 information.player = f"{http[-4:]}_{elem[1]}"
@@ -112,9 +113,3 @@ if __name__ == '__main__':
                     information.npxg = power(elem[11])
                 if elem[12] != '0.00':
                     information.xa = power(elem[12])
-              
-
-
-
-
-
