@@ -8,9 +8,8 @@ from DataBase.models.player import Player
 def click(url):
     """
     получает ссылку на страницу и нажимает на кнопки для расскрытия всех элементов таблицы с игроками
-    возвращает код всей старницы с раскрытой таблицей
     :param url: - прямая ссылка на страницу
-    :return:
+    :return: озвращает код всей старницы с раскрытой таблицей
     """
 
     driver = webdriver.ChromeOptions()
@@ -21,17 +20,11 @@ def click(url):
     logging.info('getting page')
 
     try:
-        driver.find_element_by_xpath("//div[@class='players margin-top jTable']/div[@class='table-control-panel']").click()
-        flags = driver.find_elements_by_xpath("//div[@class='players margin-top jTable']//div[@class='table-popup']"
-                                                  "//div[@class='table-popup-body']//div[@class='table-options']"
-                                                   "//div[@class='table-options-row']/div[@class='row-display']")
-        flags_position = (6, 11, 13, 14, 16, 18, 19, 20, 21, 22, 23)
-        for key, flag in enumerate(flags):
-            if key in flags_position:
-                flag.click()
-
-        driver.find_element_by_xpath("//div[@class='players margin-top jTable']//div[@class='table-popup']"
-                                 "/div[@class='table-popup-footer']/a[@class='button-apply']").click()
+        driver.find_element_by_xpath('//*[@id="team-players"]/div[1]/button').click()
+        positions = (7, 12, 14, 15, 17, 19, 20, 21, 22, 23, 24)
+        for pos in positions:
+            driver.find_element_by_xpath(f'//*[@id="team-players"]/div[2]/div[2]/div/div[{pos}]/div[2]').click()
+        driver.find_element_by_xpath('//*[@id="team-players"]/div[2]/div[3]/a[2]').click()
     except NoSuchElementException:
         logging.warning("Problems with the push of a button.")
         return
@@ -41,28 +34,27 @@ def click(url):
 
 def pars(html):
     """
-    получает код всей страницы и возврашает только таблицу с игроками
+    получает html код всей страницы
     :param html: - код всей страницы в виде html
-    :return:
+    :return: -  возврашает только таблицу с игроками
     """
     soup = BeautifulSoup(html, 'html.parser')
     scripts = soup.find('div', class_='players margin-top jTable')
-    if len(scripts) == 0:  # без len() отправляет в return.
-        logging.info('Table with player data not found.')
-        return
+    if not scripts:  # без len() отправляет в return.
+        logging.warning('Table with player data not found.')
+        return None
 
     table = scripts.find('tbody')
-    if len(table) == 0:  # без len() отправляет в return.
+    if not table:  # без len() отправляет в return.
         logging.warning('The table with the players is empty. ')
-        return
+        return None
     return table
 
 
 def power(string):
     """
-    получает строку в виде '1.02-2.06' и разделяет ее на две части, разделитель + либо -.
-    :param string:
-    :return:
+    :param string: - получает строку в виде '1.02-2.06' и разделяет ее на две части, разделитель + либо -.
+    :return: возврашает словарь - {'value': 1.02, dynamic: '-2.06'}
     """
     if '-' in string:
         values = string.split('-')
@@ -83,11 +75,16 @@ if __name__ == '__main__':
     "Schalke 04", "Union Berlin", "VfB Stuttgart", "Werder Bremen", "Wolfsburg")
 
     years = ('2014', '2015', '2016', '2017', '2018', '2019')
-    information = Player()
     for year in years:
         for team in teams:
             http = url+team+'/'+year
-            for i in pars(click(http)):
+            parser = click(http)
+            if not parser:
+                continue
+            if not pars(parser):
+                continue
+            for i in pars(parser):
+                information = Player()
                 elem = tuple(j.text for j in i)
                 information.player = f"{http[-4:]}_{elem[1]}"
                 information.position = elem[2]
@@ -111,16 +108,11 @@ if __name__ == '__main__':
                 information.red = int(elem[23])
                 if elem[10] != '0.00':
                     information.xg = power(elem[10])
-                else:
-                    information.xg = {}
                 if elem[11] != '0.00':
                     information.npxg = power(elem[11])
-                else:
-                    information.npxg = {}
                 if elem[12] != '0.00':
                     information.xa = power(elem[12])
-                else:
-                    information.xa = {}
+              
 
 
 
