@@ -55,6 +55,9 @@ class Player:
         self.team = kwargs.get("team", "")
 
     def dict(self):
+        """
+        :return: All data for player
+        """
         data = {
             "player": self.player,
             "position": self.position,

@@ -53,6 +53,9 @@ class Team:
         self.xpts = kwargs.get("xpts", {})
 
     def dict(self):
+        """
+        :return: All data for team
+        """
         data = {
             "name": self.name,
             "gp": self.gp,
