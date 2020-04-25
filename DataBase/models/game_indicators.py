@@ -13,12 +13,13 @@ class GameIndicators:
     """
 
     def __init__(self, match: str, team1: dict, team2: dict):
-        self.match = match  # year_name
-        self.team1 = self.dict_team(team1)
-        self.team2 = self.dict_team(team2)
+        self.match = match  # year_team1_team2
+        self.team1 = self.__dict_team(team1)
+        self.team2 = self.__dict_team(team2)
 
-    def dict_team(self, data_team: dict) -> dict:
+    def __dict_team(self, data_team: dict) -> dict:
         """
+        :param data_team: Data for formatting dictionary team's
         :return: All data team1
         """
         data = {
