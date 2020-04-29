@@ -2,8 +2,10 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
 import time
-from ParsingWeb.config import url, teams, years
+from ParsingWeb.config import url, years, ligues
 import logging
+import requests
+import re
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 import sys
 sys.path.append("..\DataBase")
@@ -71,6 +73,26 @@ def power(string):
     return {'value': float(values[0]), "dynamic": symbol+values[1]}
 
 
+def lig(ligue, url='https://understat.com/league/'):
+    """
+    :param ligue: - принимает название лиги
+    :param url: - часть ссылки
+    :return: - возврашает список команд переданной лиги
+    """
+    http = url+ligue
+    res = requests.get(http).content.decode('unicode_escape')
+    soup = BeautifulSoup(res, "html.parser")
+    pars = soup.find_all('script')[1].get_text()
+    if not pars:
+        logging.warning('List of teams not found.', ligue)
+        return None
+    teams = re.findall(r'"title":"([\w\s]+)', pars)
+    if not teams:
+        logging.warning('List of teams not found, regular.', ligue)
+        return None
+    return set(teams)
+
+
 def send(data, player='players'):
     """
     :param data: - словарь данных для отправки в базу данных
@@ -89,44 +111,48 @@ def send(data, player='players'):
 if __name__ == '__main__':
 
     while True:
-        for year in years:
-            for team in teams:
-                http = url+team+'/'+year
-                parser = click(http)
-                if not parser:
-                    continue
-                soup = pars(parser)
-                if not soup:
-                    continue
-                for i in soup:
-                    information = Player()
-                    elem = tuple(j.text for j in i)
-                    information.player = f"{http[-4:]}_{elem[1]}"
-                    information.position = elem[2]
-                    information.appearances = int(elem[3])
-                    information.minutes = int(elem[4])
-                    information.goals = int(elem[5])
-                    information.npg = int(elem[6])
-                    information.a = int(elem[7])
-                    information.sh90 = float('{:.2f}'.format(float(elem[8])))
-                    information.kp90 = float('{:.2f}'.format(float(elem[9])))
-                    information.xgchain = float('{:.2f}'.format(float(elem[13])))
-                    information.xgbuildup = float('{:.2f}'.format(float(elem[14])))
-                    information.xg90 = float('{:.2f}'.format(float(elem[15])))
-                    information.npxg90 = float('{:.2f}'.format(float(elem[16])))
-                    information.xa90 = float('{:.2f}'.format(float(elem[17])))
-                    information.xg90xa90 = float('{:.2f}'.format(float(elem[18])))
-                    information.npxg90xa90 = float('{:.2f}'.format(float(elem[19])))
-                    information.xgchain90 = float('{:.2f}'.format(float(elem[20])))
-                    information.xgbuildup90 = float('{:.2f}'.format(float(elem[21])))
-                    information.yellow = int(elem[22])
-                    information.red = int(elem[23])
-                    if elem[10] != '0.00':
-                        information.xg = power(elem[10])
-                    if elem[11] != '0.00':
-                        information.npxg = power(elem[11])
-                    if elem[12] != '0.00':
-                        information.xa = power(elem[12])
-                    players = information.dict()
-                    send(players)
+        for ligue in ligues:
+            teams = lig(ligue)
+            if not teams:
+                continue
+            for year in years:
+                for team in teams:
+                    http = url+team+'/'+year
+                    parser = click(http)
+                    if not parser:
+                        continue
+                    soup = pars(parser)
+                    if not soup:
+                        continue
+                    for i in soup:
+                        information = Player()
+                        elem = tuple(j.text for j in i)
+                        information.player = f"{http[-4:]}_{elem[1]}"
+                        information.position = elem[2]
+                        information.appearances = int(elem[3])
+                        information.minutes = int(elem[4])
+                        information.goals = int(elem[5])
+                        information.npg = int(elem[6])
+                        information.a = int(elem[7])
+                        information.sh90 = float('{:.2f}'.format(float(elem[8])))
+                        information.kp90 = float('{:.2f}'.format(float(elem[9])))
+                        information.xgchain = float('{:.2f}'.format(float(elem[13])))
+                        information.xgbuildup = float('{:.2f}'.format(float(elem[14])))
+                        information.xg90 = float('{:.2f}'.format(float(elem[15])))
+                        information.npxg90 = float('{:.2f}'.format(float(elem[16])))
+                        information.xa90 = float('{:.2f}'.format(float(elem[17])))
+                        information.xg90xa90 = float('{:.2f}'.format(float(elem[18])))
+                        information.npxg90xa90 = float('{:.2f}'.format(float(elem[19])))
+                        information.xgchain90 = float('{:.2f}'.format(float(elem[20])))
+                        information.xgbuildup90 = float('{:.2f}'.format(float(elem[21])))
+                        information.yellow = int(elem[22])
+                        information.red = int(elem[23])
+                        if elem[10] != '0.00':
+                            information.xg = power(elem[10])
+                        if elem[11] != '0.00':
+                            information.npxg = power(elem[11])
+                        if elem[12] != '0.00':
+                            information.xa = power(elem[12])
+                        players = information.dict()
+                        send(players)
         time.sleep(345600)
