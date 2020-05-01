@@ -1,7 +1,8 @@
 import logging
 from typing import Any, Union
 from pymongo import MongoClient, errors
-from models import player, team
+sys.path.append("D:\Мои документы\Desktop\R&D\Analytics")
+from models import player, team, game_indicators
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
@@ -66,7 +67,9 @@ class MongoDefault:
         else:
             method = {
                 self.collection.name == "players": player.Player(**next(self.collection.find(data))),
-                self.collection.name == "teams": team.Team(**next(self.collection.find(data)))
+                self.collection.name == "teams": team.Team(**next(self.collection.find(data))),
+                self.collection.name == "gameIndicators":
+                    game_indicators.GameIndicators(**next(self.collection.find(data)))
             }[True]
             return method
 
