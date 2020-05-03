@@ -1,6 +1,9 @@
-class Team:
+from structure import Structure
+
+
+class Team(Structure):
     """
-    :param name: [str] = Team name
+    :param name: [str] = Team name # year_name
     :param gp: [int] = Count of matches
     :param w: [int] = Wins
     :param d: [int] = Draws
@@ -26,31 +29,10 @@ class Team:
     :param xpts: [dict] = Expected points
     """
 
-    def __init__(self, **kwargs):
-        self.name = kwargs.get("name", "")  # year_name
-        self.gp = kwargs.get("gp", 0)
-        self.w = kwargs.get("w", 0)
-        self.d = kwargs.get("d", 0)
-        self.l = kwargs.get("l", 0)
-        self.gf = kwargs.get("gf", 0)
-        self.ga = kwargs.get("ga", 0)
-        self.gd = kwargs.get("gd", "")
-        self.pts = kwargs.get("pts", 0)
-        self.form = kwargs.get("form", [])
-        self.ppg = kwargs.get("ppg", 0.0)
-        self.last8 = kwargs.get("last8", 0.0)
-        self.cs = kwargs.get("cs", "")
-        self.fts = kwargs.get("fts", "")
-        self.xg = kwargs.get("xg", {})
-        self.npgx = kwargs.get("npgx", 0.0)
-        self.xga = kwargs.get("xga", {})
-        self.npxga = kwargs.get("npxga", 0.0)
-        self.npxgd = kwargs.get("npxgd", "")
-        self.ppda = kwargs.get("ppda", 0.0)
-        self.oppda = kwargs.get("oppda", 0.0)
-        self.dc = kwargs.get("dc", 0)
-        self.odc = kwargs.get("odc", 0)
-        self.xpts = kwargs.get("xpts", {})
+    _fields = ["name", "gp", "w", "d", "l", "gf", "ga", "gd", "pts", "form", "ppg", "last8", "cs", "fts", "xg", "npgx",
+               "xga", "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts"]
+    _type = [str(), int(), int(), int(), int(), int(), int(), str(), int(), list(), float(), float(), str(), str(),
+             dict(), float(), dict(), float(), str(), float(), float(), int(), int(), dict()]
 
     def dict(self):
         """
