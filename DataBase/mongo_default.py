@@ -107,3 +107,17 @@ class MongoDefault:
         self.client.close()
         if exc_val:
             raise
+
+    def update_or_add(self, key, value_old, value_new):
+        """
+        Update all documents which have indicated key, or add new if doesn't exists
+        :param key: Key in document
+        :param value_old: Current value in document
+        :param value_new: New value in document
+        :return: status code
+        """
+        old_data = {key: value_old}
+        new_data = {"$set": {key: value_new}}
+        result = self.collection.update_many(old_data, new_data, upsert=True)
+        return result.acknowledged, result.modified_count
+
