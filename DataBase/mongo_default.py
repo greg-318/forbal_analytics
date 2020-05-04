@@ -1,6 +1,6 @@
+import sys
 import logging
-from typing import Any, Union
-from pymongo import MongoClient, errors
+from pymongo import MongoClient
 sys.path.append("D:\Мои документы\Desktop\R&D\Analytics")
 from models import player, team, game_indicators
 
@@ -34,24 +34,26 @@ class MongoDefault:
         self.collection = self.db[self.collection]
         return self
 
-    def insert(self, data: dict, one: int = 1) -> tuple:
+    def insertUpdate(self, value_uniq_key: str, value_to: dict, one: int = 1) -> tuple:
         """
-        :param data: All data for insert
-        :param one: Insert one document
-        :return: status result
+        :param value_uniq_key: Value from uniq key
+        :param value_to: Value for update or insert
+        :param one: Update one document
+        :return: status code
         """
+        uniq_key = {
+            self.collection.name == "players": "player",
+            self.collection.name == "teams": "name",
+            self.collection.name == "gameIndicators": "match"
+        }[True]
+        old_data = {uniq_key: value_uniq_key}
+        new_data = {"$set": value_to}
         if one:
-            try:
-                status = self.collection.insert_one(data)
-            except errors.DuplicateKeyError:
-                return "Error", "Key already created"
-            else:
-                res = status.inserted_id
-
+            result = self.collection.update_one(old_data, new_data, upsert=True)
+            return result.acknowledged, result.modified_count
         else:
-            status = self.collection.insert_many(data)
-            res = status.inserted_ids
-        return status.acknowledged, res
+            raise NotImplementedError("Not Implemented case")
+            # result = self.collection.update_many()
 
     def select(self, data: dict) -> dict:
         """
@@ -73,24 +75,6 @@ class MongoDefault:
             }[True]
             return method
 
-    def update(self, key: Union[int, str], value_old: Any, value_new: Any, one: int = 1) -> tuple:
-        """
-        :param key: Key in document
-        :param value_old: Current value in document
-        :param value_new: New value in document
-        :param one: Update one document
-        :return: status code
-        """
-        old_data = {key: value_old}
-        new_data = {"$set": {key: value_new}}
-        if one:
-            result = self.collection.update_one(old_data, new_data)
-            return result.acknowledged, result.modified_count
-
-        else:
-            raise NotImplementedError("Not Implemented case")
-            # result = self.collection.update_many()
-
     def delete(self, data: dict, one: int = 1) -> tuple:
         """
         :param data: Data for delete in DB
@@ -100,7 +84,6 @@ class MongoDefault:
         if one:
             result = self.collection.delete_one(data)
             return result.acknowledged, result.deleted_count
-
         else:
             raise NotImplementedError("Not Implemented case")
             # result = self.collection.delete_many(data)
