@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 import logging
 from pymongo import MongoClient
 sys.path.append("D:\Мои документы\Desktop\R&D\Analytics")
@@ -11,11 +12,9 @@ class MongoDefault:
     """
     Examples:
 
-    insert = dict from Player or Team class
+    insertUpdate = value from unique key and dict from models class
 
     select = {"name": "Jamie Vardy"}
-
-    update = ("name", "Jamie Vardy", "J. V.")
 
     delete = {"name": "Jamie Vardy"}
     """
@@ -47,6 +46,7 @@ class MongoDefault:
             self.collection.name == "gameIndicators": "match"
         }[True]
         old_data = {uniq_key: value_uniq_key}
+        value_to["datetime"] = str(datetime.today().strftime("%Y-%m-%d"))
         new_data = {"$set": value_to}
         if one:
             result = self.collection.update_one(old_data, new_data, upsert=True)
