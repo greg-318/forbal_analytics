@@ -1,6 +1,9 @@
-class Player:
+from structure import Structure
+
+
+class Player(Structure):
     """
-    :param player: [str] = Player name and surname
+    :param player: [str] = Player name and surname # year_player
     :param position: [str] = Position
     :param appearances: [int] = Number of appearances
     :param minutes: [int] = Time spent in the game
@@ -27,32 +30,11 @@ class Player:
     :param team: [str] = Team name
     """
 
-    def __init__(self, **kwargs):
-
-        self.player = kwargs.get("player", "")  # year_player
-        self.position = kwargs.get("position", "")
-        self.appearances = kwargs.get("appearances", 0)
-        self.minutes = kwargs.get("minutes", 0)
-        self.goals = kwargs.get("goals", 0)
-        self.npg = kwargs.get("npg", 0)
-        self.a = kwargs.get("a", 0)
-        self.sh90 = kwargs.get("sh90", 0.0)
-        self.kp90 = kwargs.get("kp90", 0.0)
-        self.xg = kwargs.get("xg", {})
-        self.npxg = kwargs.get("npxg", {})
-        self.xa = kwargs.get("xa", {})
-        self.xgchain = kwargs.get("xgchain", 0.0)
-        self.xgbuildup = kwargs.get("xgbuildup", 0.0)
-        self.xg90 = kwargs.get("xg90", 0.0)
-        self.npxg90 = kwargs.get("npxg90", 0.0)
-        self.xa90 = kwargs.get("xa90", 0.0)
-        self.xg90xa90 = kwargs.get("xg90xa90", 0.0)
-        self.npxg90xa90 = kwargs.get("npxg90xa90", 0.0)
-        self.xgchain90 = kwargs.get("xgchain90", 0.0)
-        self.xgbuildup90 = kwargs.get("xgbuildup90", 0.0)
-        self.yellow = kwargs.get("yellow", 0)
-        self.red = kwargs.get("red", 0)
-        self.team = kwargs.get("team", "")
+    _fields = ["player", "position", "appearances", "minutes", "goals", "npg", "a", "sh90", "kp90", "xg", "npxg", "xa",
+               "xgchain", "xgbuildup", "xg90", "npxg90", "xa90", "xg90xa90", "npxg90xa90", "xgchain90", "xgbuildup90",
+               "yellow", "red", "team"]
+    _type = [str(), str(), int(), int(), int(), int(), int(), float(), float(), dict(), dict(), dict(), float(),
+             float(), float(), float(), float(), float(), float(), float(), float(), int(), int(), str()]
 
     def dict(self):
         """
