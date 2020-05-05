@@ -1,4 +1,5 @@
-pyinstaller --hidden-import pkg_resources.py2_warn --onefile --noconsole --icon=ball.ico main.py
+# OLD!!!! # pyinstaller --onefile --noconsole --icon=ball.ico main.spec
+pyinstaller main.spec
 
 # установка путей
 C:\Users\GAMES\AppData\Local\Programs\Python\Python37-32\Lib\site-packages\PyInstaller\utils\hooks\qt.py
