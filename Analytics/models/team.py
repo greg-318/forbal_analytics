@@ -1,4 +1,4 @@
-from structure import Structure
+from .structure import Structure
 
 
 class Team(Structure):
@@ -33,35 +33,3 @@ class Team(Structure):
                "xga", "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts"]
     _type = [str(), int(), int(), int(), int(), int(), int(), str(), int(), list(), float(), float(), str(), str(),
              dict(), float(), dict(), float(), str(), float(), float(), int(), int(), dict()]
-
-    def dict(self):
-        """
-        :return: All data for team
-        """
-        data = {
-            "name": self.name,
-            "gp": self.gp,
-            "wins": self.w,
-            "draws": self.d,
-            "loses": self.l,
-            "gf": self.gf,
-            "ga": self.ga,
-            "gd": self.gd,
-            "points": self.pts,
-            "form": self.form,
-            "ppg": self.ppg,
-            "last8": self.last8,
-            "cs": self.cs,
-            "fts": self.fts,
-            "xg": self.xg,
-            "npgx": self.npgx,
-            "xga": self.xga,
-            "npxga": self.npxga,
-            "npxgd": self.npxgd,
-            "ppda": self.ppda,
-            "oppda": self.oppda,
-            "dc": self.dc,
-            "odc": self.odc,
-            "xpts": self.xpts
-        }
-        return data

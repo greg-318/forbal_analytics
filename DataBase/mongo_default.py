@@ -1,9 +1,8 @@
-import sys
+from types import MappingProxyType
 from datetime import datetime
 import logging
 from pymongo import MongoClient
-sys.path.append("D:\Мои документы\Desktop\R&D\Analytics")
-from models import player, team, game_indicators
+from Analytics.models import player, team, game_indicators
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
@@ -40,11 +39,11 @@ class MongoDefault:
         :param one: Update one document
         :return: status code
         """
-        uniq_key = {
+        uniq_key = MappingProxyType({
             self.collection.name == "players": "player",
             self.collection.name == "teams": "name",
             self.collection.name == "gameIndicators": "match"
-        }[True]
+        })[True]
         old_data = {uniq_key: value_uniq_key}
         value_to["datetime"] = str(datetime.today().strftime("%Y-%m-%d"))
         new_data = {"$set": value_to}
@@ -62,17 +61,16 @@ class MongoDefault:
         """
 
         result = self.collection.find(data)
-        try:
-            next(result)
-        except StopIteration:
-            return {}
+        check = next(result, {})
+        if not check:
+            return check
         else:
-            method = {
+            method = MappingProxyType({
                 self.collection.name == "players": player.Player(**next(self.collection.find(data))),
                 self.collection.name == "teams": team.Team(**next(self.collection.find(data))),
                 self.collection.name == "gameIndicators":
                     game_indicators.GameIndicators(**next(self.collection.find(data)))
-            }[True]
+            })[True]
             return method
 
     def delete(self, data: dict, one: int = 1) -> tuple:

@@ -1,4 +1,4 @@
-from structure import Structure
+from .structure import Structure
 
 
 class Player(Structure):
@@ -35,35 +35,3 @@ class Player(Structure):
                "yellow", "red", "team"]
     _type = [str(), str(), int(), int(), int(), int(), int(), float(), float(), dict(), dict(), dict(), float(),
              float(), float(), float(), float(), float(), float(), float(), float(), int(), int(), str()]
-
-    def dict(self):
-        """
-        :return: All data for player
-        """
-        data = {
-            "player": self.player,
-            "position": self.position,
-            "appearances": self.appearances,
-            "minutes": self.minutes,
-            "goals": self.goals,
-            "npg": self.npg,
-            "a": self.a,
-            "sh90": self.sh90,
-            "kp90": self.kp90,
-            "xg": self.xg,
-            "npxg": self.npxg,
-            "xa": self.xa,
-            "xgchain": self.xgchain,
-            "xgbuildup": self.xgbuildup,
-            "xg90": self.xg90,
-            "npxg90": self.npxg90,
-            "xa90": self.xa90,
-            "xg90xa90": self.xg90xa90,
-            "npxg90xa90": self.npxg90xa90,
-            "xgchain90": self.xgchain90,
-            "xgbuildup90": self.xgbuildup90,
-            "yellow": self.yellow,
-            "red": self.red,
-            "team": self.team
-        }
-        return data
