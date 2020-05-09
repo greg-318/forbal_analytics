@@ -33,5 +33,5 @@ class Player(Structure):
     _fields = ["player", "position", "appearances", "minutes", "goals", "npg", "a", "sh90", "kp90", "xg", "npxg", "xa",
                "xgchain", "xgbuildup", "xg90", "npxg90", "xa90", "xg90xa90", "npxg90xa90", "xgchain90", "xgbuildup90",
                "yellow", "red", "team"]
-    _type = [str(), str(), int(), int(), int(), int(), int(), float(), float(), dict(), dict(), dict(), float(),
-             float(), float(), float(), float(), float(), float(), float(), float(), int(), int(), str()]
+    _type = [str, str, int, int, int, int, int, float, float, dict, dict, dict, float, float, float, float, float,
+             float, float, float, float, int, int, str]
