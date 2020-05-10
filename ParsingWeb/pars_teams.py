@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.common.exceptions \
     import ElementClickInterceptedException, NoSuchElementException
 from DataBase.models.team import Team
+# from DataBase.mongo_default import MongoDefault
 
 
 years = ('2014', '2015', '2016', '2017', '2018', '2019')
@@ -57,9 +58,9 @@ def soccer_handler(req):
     return soccer_inds
 
 
-def find_under_body():
+def find_under_body(url):
     """собирает тело таблицы с understat для разбора по командам"""
-    driver.get(under_url)
+    driver.get(url)
     global START_UNDER
     if START_UNDER:
         driver.find_element_by_class_name('options-button').click()
@@ -138,7 +139,6 @@ def model_pack(all_ind: list):
 
 def insert_to_db(model: Team):
     """добавление данных в бд"""
-    print(model.dict())
     pass
 
 
@@ -155,18 +155,21 @@ if __name__ == '__main__':
                     SOCCER_URL = MAIN_URL_SOCCERSTATS + soccer_liga
                 under_url = MAIN_URL_UNDERSTAT + 'league/' + under_liga + '/' + year
                 soccer_request = requests.get(SOCCER_URL)
-                if soccer_request.status_code != 404:
+                if soccer_request.status_code == 200:
+                    logging.info(f'Parsing soccerstats for year {year} and league {soccer_liga}')
                     soccer_dict = soccer_handler(soccer_request)
                 else:
-                    logging.warning('Something happens with connection to soccerstats')
+                    logging.warning('Something happens with connection to soccerstats, trying again')
                     continue
                 try:
-                    bodies = find_under_body()
+                    logging.info(f'Parsing understat for year {year} and league {under_liga}')
+                    bodies = find_under_body(under_url)
                 except ElementClickInterceptedException:
-                    logging.warning('Cannot click on element')
+                    logging.warning('Cannot click on element, trying again')
                 except NoSuchElementException:
-                    logging.warning('Element is not available or connection lost, restart the script')
+                    logging.warning('Element is not available or connection lost, trying again')
                 else:
                     under_dict = under_handler(bodies)
                     collect_all()
+                    logging.info(f'Successfully inserted in database')
                     break  # остановка цикла, в котором решаются ошибки
