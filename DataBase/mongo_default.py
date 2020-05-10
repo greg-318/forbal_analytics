@@ -66,11 +66,10 @@ class MongoDefault:
             return check
         else:
             method = MappingProxyType({
-                self.collection.name == "players": player.Player(**next(self.collection.find(data))),
-                self.collection.name == "teams": team.Team(**next(self.collection.find(data))),
-                self.collection.name == "gameIndicators":
-                    game_indicators.GameIndicators(**next(self.collection.find(data)))
-            })[True]
+                self.collection.name == "players": player.Player,
+                self.collection.name == "teams": team.Team,
+                self.collection.name == "gameIndicators": game_indicators.GameIndicators
+            })[True](**next(self.collection.find(data)))
             return method
 
     def delete(self, data: dict, one: int = 1) -> tuple:
