@@ -17,7 +17,7 @@ class Team(Structure):
     :param cs: [str] = % clean sheets (matches with no goal conceded)
     :param fts: [str] = % failed to score (matches with no goal scored)
     :param xg: [dict] = Expected goals for
-    :param npgx: [float] = Expected goals for without penalties and own goals
+    :param npxg: [float] = Expected goals for without penalties and own goals
     :param xga: [dict] = Expected goals againist
     :param npxga: [float] = Expected goals againist without penalties and own goals
     :param npxgd: [str] = The difference between "for" and "against" expected goals without penalties and own goals
