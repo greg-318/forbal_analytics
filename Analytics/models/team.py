@@ -12,7 +12,6 @@ class Team(Structure):
     :param ga: [int] = Goals againist
     :param gd: [str] = Goal difference
     :param pts: [int] = Points
-    :param form: [list] = Last 6 results # [{"FC Barcelona": 2, "Levante": 1}, ...]
     :param ppg: [float] = Points per game
     :param last8: [float] = Points per game in the last 8 matches
     :param cs: [str] = % clean sheets (matches with no goal conceded)
@@ -29,7 +28,7 @@ class Team(Structure):
     :param xpts: [dict] = Expected points
     """
 
-    _fields = ["name", "gp", "w", "d", "l", "gf", "ga", "gd", "pts", "form", "ppg", "last8", "cs", "fts", "xg", "npxg",
+    _fields = ["name", "gp", "w", "d", "l", "gf", "ga", "gd", "pts", "ppg", "last8", "cs", "fts", "xg", "npxg",
                "xga", "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts"]
-    _type = [str, int, int, int, int, int, int, str, int, list, float, float, str, str, dict, float, dict, float, str,
+    _type = [str, int, int, int, int, int, int, str, int, float, float, str, str, dict, float, dict, float, str,
              float, float, int, int, dict]
