@@ -29,7 +29,7 @@ class Team(Structure):
     :param xpts: [dict] = Expected points
     """
 
-    _fields = ["name", "gp", "w", "d", "l", "gf", "ga", "gd", "pts", "form", "ppg", "last8", "cs", "fts", "xg", "npgx",
+    _fields = ["name", "gp", "w", "d", "l", "gf", "ga", "gd", "pts", "form", "ppg", "last8", "cs", "fts", "xg", "npxg",
                "xga", "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts"]
     _type = [str, int, int, int, int, int, int, str, int, list, float, float, str, str, dict, float, dict, float, str,
              float, float, int, int, dict]
