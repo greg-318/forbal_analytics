@@ -12,23 +12,20 @@ class TypedProperty:
 
     def __set__(self, instance, value):
         if not isinstance(value, self.type):
-            raise TypeError('Expected an {}'.format(self.type))
+            raise TypeError('Expected an {} for {}'.format(self.type, self.name))
         instance.__dict__[self.name] = value
 
     def __delete__(self, instance):
-        raise AttributeError('Attribute cann\'t remove')
+        raise AttributeError('Attribute cann\'t be remove')
 
 
 class Structure:
     _fields = {}
 
     def __init__(self, **kwargs):
-        self._type = dict(self._fields)
-
-        for key, val in self._type.items():
-            setattr(self.__class__, key, TypedProperty(key, val))
 
         for name, type_ in self._fields.items():
+            setattr(self.__class__, name, TypedProperty(name, type_))
             setattr(self, name, kwargs.pop(name, type_()))
         if kwargs:
             raise TypeError('Invalid argument(s): {}'.format(','.join(kwargs)))

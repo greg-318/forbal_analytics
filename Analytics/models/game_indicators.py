@@ -9,14 +9,14 @@ class TeamIndicators(Structure):
     :param g: Goals scored
     :param xg: Expected goals
     :param sh: Total hits
-    :param sh_target: Total hits on target
+    :param sht: Total hits on target
     :param deep: Number of passes 18m from the opponent's goal
     :param ppda: High pressure (not less than 40 meters from goal)
     :param xpts: How many ops hit on goal % overall
-    :param ball_possession: % ball possession
+    :param bp: % ball possession
     :param players: Players in current match
     """
-    _fields = MappingProxyType({"name": str, "chances": int, "g": int, "xg": float, "sh": int, "sh_target": int,
+    _fields = MappingProxyType({"name": str, "chances": int, "g": int, "xg": float, "sh": int, "sht": int,
                                 "deep": int, "ppda": float, "xpts": float, "bp": int, "players": list})
 
 
@@ -32,3 +32,4 @@ class GameIndicators(Structure):
     def dict(self):
         self.team1 = self.team1 or TeamIndicators().dict()
         self.team2 = self.team2 or TeamIndicators().dict()
+        return super().dict()
