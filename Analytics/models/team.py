@@ -1,34 +1,35 @@
 from .structure import Structure
+from types import MappingProxyType
 
 
 class Team(Structure):
     """
-    :param name: [str] = Team name # year_name
-    :param gp: [int] = Count of matches
-    :param w: [int] = Wins
-    :param d: [int] = Draws
-    :param l: [int] = Loses
-    :param gf: [int] = Goals for
-    :param ga: [int] = Goals againist
-    :param gd: [str] = Goal difference
-    :param pts: [int] = Points
-    :param ppg: [float] = Points per game
-    :param last8: [float] = Points per game in the last 8 matches
-    :param cs: [str] = % clean sheets (matches with no goal conceded)
-    :param fts: [str] = % failed to score (matches with no goal scored)
-    :param xg: [dict] = Expected goals for
-    :param npxg: [float] = Expected goals for without penalties and own goals
-    :param xga: [dict] = Expected goals againist
-    :param npxga: [float] = Expected goals againist without penalties and own goals
-    :param npxgd: [str] = The difference between "for" and "against" expected goals without penalties and own goals
-    :param ppda: [float] = Passes allowed per defensive action in the opposition half
-    :param oppda: [float] = Opponent passes allowed per defensive action in the opposition half
-    :param dc: [int] = Passes completed within an estimated 20 yards of goal (crosses excluded)
-    :param odc: [int] = Opponent passes completed within an estimated 20 yards of goal (crosses excluded)
-    :param xpts: [dict] = Expected points
+    :param name: Team name # year_name
+    :param gp: Count of matches
+    :param w: Wins
+    :param d: Draws
+    :param l: Loses
+    :param gf: Goals for
+    :param ga: Goals againist
+    :param gd: Goal difference
+    :param pts: Points
+    :param ppg: Points per game
+    :param last8: Points per game in the last 8 matches
+    :param cs: % clean sheets (matches with no goal conceded)
+    :param fts: % failed to score (matches with no goal scored)
+    :param xg: Expected goals for
+    :param npxg: Expected goals for without penalties and own goals
+    :param xga: Expected goals againist
+    :param npxga: Expected goals againist without penalties and own goals
+    :param npxgd: The difference between "for" and "against" expected goals without penalties and own goals
+    :param ppda: Passes allowed per defensive action in the opposition half
+    :param oppda: Opponent passes allowed per defensive action in the opposition half
+    :param dc: Passes completed within an estimated 20 yards of goal (crosses excluded)
+    :param odc: Opponent passes completed within an estimated 20 yards of goal (crosses excluded)
+    :param xpts: Expected points
     """
 
-    _fields = ["name", "gp", "w", "d", "l", "gf", "ga", "gd", "pts", "ppg", "last8", "cs", "fts", "xg", "npxg",
-               "xga", "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts"]
-    _type = [str, int, int, int, int, int, int, str, int, float, float, str, str, dict, float, dict, float, str,
-             float, float, int, int, dict]
+    _fields = MappingProxyType({"name": str, "gp": int, "w": int, "d": int, "l": int, "gf": int, "ga": int, "gd": int,
+                                "pts": int, "ppg": float, "last8": float, "cs": float, "fts": float, "xg": float,
+                                "npxg": float, "xga": float, "npxga": float, "npxgd": float, "ppda": float,
+                                "oppda": float, "dc": int, "odc": int, "xpts": float})
