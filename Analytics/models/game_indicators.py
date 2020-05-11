@@ -18,6 +18,7 @@ class TeamIndicators(Structure):
     """
     _fields = MappingProxyType({"name": str, "chances": int, "g": int, "xg": float, "sh": int, "sh_target": int,
                                 "deep": int, "ppda": float, "xpts": float, "bp": int, "players": list})
+    __module__ = None
 
 
 class GameIndicators(Structure):
@@ -27,5 +28,8 @@ class GameIndicators(Structure):
     :param team1: All data from Team 1
     :param team2: All data from Team 2
     """
-    _fields = MappingProxyType({"match": str, "chances_draw": int, "team1": TeamIndicators().dict,
-                                "team2": TeamIndicators().dict})
+    _fields = MappingProxyType({"match": str, "chances_draw": int, "team1": dict, "team2": dict})
+
+    def dict(self):
+        self.team1 = self.team1 or TeamIndicators().dict()
+        self.team2 = self.team2 or TeamIndicators().dict()
