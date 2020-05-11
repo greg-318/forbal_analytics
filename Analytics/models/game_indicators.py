@@ -18,7 +18,6 @@ class TeamIndicators(Structure):
     """
     _fields = MappingProxyType({"name": str, "chances": int, "g": int, "xg": float, "sh": int, "sh_target": int,
                                 "deep": int, "ppda": float, "xpts": float, "bp": int, "players": list})
-    __module__ = None
 
 
 class GameIndicators(Structure):
