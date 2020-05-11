@@ -12,7 +12,11 @@ class TypedProperty:
 
     def __set__(self, instance, value):
         if not isinstance(value, self.type):
-            raise TypeError('Expected an {} for {}'.format(self.type, self.name))
+            try:
+                instance.__dict__[self.name] = self.type(value)
+                return
+            except:
+                raise TypeError('Expected an {} for {}'.format(self.type, self.name))
         instance.__dict__[self.name] = value
 
     def __delete__(self, instance):
