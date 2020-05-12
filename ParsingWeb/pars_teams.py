@@ -1,5 +1,7 @@
 import re
 import logging
+import time
+
 import requests
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
@@ -7,7 +9,6 @@ from selenium.common.exceptions \
     import ElementClickInterceptedException, NoSuchElementException
 # from Analytics.models.team import Team
 # from DataBase.mongo_default import MongoDefault
-
 
 years = ('2014', '2015', '2016', '2017', '2018', '2019')
 MAIN_URL_UNDERSTAT = "https://understat.com/"
@@ -93,33 +94,33 @@ def under_handler(body: list):
     return under_inds
 
 
-def model_pack(all_ind: list):
+def model_pack(indicators: list):
     """отправка данных в модель"""
     model = Team(
-        name=str(all_ind[0]),
-        gp=int(all_ind[1]),
-        w=int(all_ind[2]),
-        d=int(all_ind[3]),
-        l=int(all_ind[4]),
-        gf=int(all_ind[5]),
-        ga=int(all_ind[6]),
-        gd=str(all_ind[7]),
-        pts=int(all_ind[8]),
-        form=all_ind[9],
-        ppg=float(all_ind[10]),
-        last8=float(all_ind[11]),
-        cs=str(all_ind[12]),
-        fts=str(all_ind[13]),
-        xg=all_ind[14],
-        npxg=float(all_ind[15]),
-        xga=all_ind[16],
-        npxga=float(all_ind[17]),
-        npxgd=str(all_ind[18]),
-        ppda=float(all_ind[19]),
-        oppda=float(all_ind[20]),
-        dc=int(all_ind[21]),
-        odc=int(all_ind[22]),
-        xpts=all_ind[23]
+        name=str(indicators[0]),
+        gp=int(indicators[1]),
+        w=int(indicators[2]),
+        d=int(indicators[3]),
+        l=int(indicators[4]),
+        gf=int(indicators[5]),
+        ga=int(indicators[6]),
+        gd=str(indicators[7]),
+        pts=int(indicators[8]),
+        form=indicators[9],
+        ppg=float(indicators[10]),
+        last8=float(indicators[11]),
+        cs=str(indicators[12]),
+        fts=str(indicators[13]),
+        xg=indicators[14],
+        npxg=float(indicators[15]),
+        xga=indicators[16],
+        npxga=float(indicators[17]),
+        npxgd=str(indicators[18]),
+        ppda=float(indicators[19]),
+        oppda=float(indicators[20]),
+        dc=int(indicators[21]),
+        odc=int(indicators[22]),
+        xpts=indicators[23]
     )
     return model
 
@@ -130,44 +131,46 @@ def insert_to_db(model: Team):
 
 
 if __name__ == '__main__':
-    START_UNDER = True
-    for soccer_liga, under_liga in names.items():
-        for index in range(len(years)):
-            year = years[index]
-            if year == years[0] and soccer_liga == 'russia':
-                continue
-            while True:  # если возникнут ошибки - перезапуск итерации для повторной попытки
-                if years[index] != years[-1]:
-                    SOCCER_URL = MAIN_URL_SOCCERSTATS + soccer_liga + '_' + str(int(year) + 1)
-                else:
-                    SOCCER_URL = MAIN_URL_SOCCERSTATS + soccer_liga
-                under_url = MAIN_URL_UNDERSTAT + 'league/' + under_liga + '/' + year
-                soccer_request = requests.get(SOCCER_URL)
-                if soccer_request.status_code == 200:
-                    logging.info(f'Parsing soccerstats for year {year} and league {soccer_liga}')
-                    soccer_dict = soccer_handler(soccer_request)
-                else:
-                    logging.warning('Something happens with connection to soccerstats, trying again')
+    while True:
+        START_UNDER = True
+        for soccer_liga, under_liga in names.items():
+            for index in range(len(years)):
+                year = years[index]
+                if year == years[0] and soccer_liga == 'russia':
                     continue
-                try:
-                    logging.info(f'Parsing understat for year {year} and league {under_liga}')
-                    bodies = find_under_body(under_url)
-                except ElementClickInterceptedException:
-                    logging.warning('Cannot click on element, trying again')
-                except NoSuchElementException:
-                    logging.warning('Element is not available or connection lost, trying again')
-                else:
-                    under_dict = under_handler(bodies)
-                    for team, indic in soccer_dict.items():
-                        for value in under_dict.values():
-                            if indic[0:6] == value[0:6]:
-                                all_ind = [
-                                    team, indic[0], indic[1], indic[2], indic[3], indic[4], indic[5], indic[6],
-                                    indic[7], indic[8], indic[-4], indic[-3], indic[-2], indic[-1], value[7],
-                                    value[8], value[9], value[10], value[11], value[12], value[13], value[14],
-                                    value[15], value[16]
-                                ]
-                                model = model_pack(all_ind)
-                                insert_to_db(model)
-                    logging.info(f'Successfully inserted in database')
-                    break  # остановка цикла, в котором решаются ошибки
+                while True:  # если возникнут ошибки - перезапуск итерации для повторной попытки
+                    if years[index] != years[-1]:
+                        SOCCER_URL = MAIN_URL_SOCCERSTATS + soccer_liga + '_' + str(int(year) + 1)
+                    else:
+                        SOCCER_URL = MAIN_URL_SOCCERSTATS + soccer_liga
+                    under_url = MAIN_URL_UNDERSTAT + 'league/' + under_liga + '/' + year
+                    soccer_request = requests.get(SOCCER_URL)
+                    if soccer_request.status_code == 200:
+                        logging.info(f'Parsing soccerstats for year {year} and league {soccer_liga}')
+                        soccer_dict = soccer_handler(soccer_request)
+                    else:
+                        logging.warning('Something happens with connection to soccerstats, trying again')
+                        continue
+                    try:
+                        logging.info(f'Parsing understat for year {year} and league {under_liga}')
+                        bodies = find_under_body(under_url)
+                    except ElementClickInterceptedException:
+                        logging.warning('Cannot click on element, trying again')
+                    except NoSuchElementException:
+                        logging.warning('Element is not available or connection lost, trying again')
+                    else:
+                        under_dict = under_handler(bodies)
+                        for soccer_team, indic in soccer_dict.items():
+                            for value in under_dict.values():
+                                if indic[0:6] == value[0:6]:
+                                    all_ind = [
+                                        soccer_team, indic[0], indic[1], indic[2], indic[3], indic[4], indic[5], indic[6],
+                                        indic[7], indic[8], indic[-4], indic[-3], indic[-2], indic[-1], value[7],
+                                        value[8], value[9], value[10], value[11], value[12], value[13], value[14],
+                                        value[15], value[16]
+                                    ]
+                                    team_model = model_pack(all_ind)
+                                    insert_to_db(team_model)
+                        logging.info('Successfully inserted in database')
+                        break  # остановка цикла, в котором решаются ошибки
+        time.sleep(345600)  # сон на 4 дня
