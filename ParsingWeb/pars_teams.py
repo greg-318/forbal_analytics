@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.common.exceptions \
     import ElementClickInterceptedException, NoSuchElementException
-from DataBase.models.team import Team
+# from Analytics.models.team import Team
 # from DataBase.mongo_default import MongoDefault
 
 
@@ -16,14 +16,15 @@ names = {"russia": "RFPL", "england": "EPL",
          "spain": "La_liga", "germany": "Bundesliga",
          "italy": "Serie_A", "france": "Ligue_1"}
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 driver = webdriver.ChromeOptions()
 driver.add_argument('headless')
 driver.add_argument('--window-size=1920,1080')
 #driver.add_argument('--start-maximized')
 driver = webdriver.Chrome(executable_path='./chromedriver', options=driver)
 numbers = ("11", "13", "14", "15", "16", "17", "18")
-START_UNDER = True
+
+# COLLECTION = MongoDefault('teams')
 
 
 def soccer_handler(req):
@@ -92,20 +93,6 @@ def under_handler(body: list):
     return under_inds
 
 
-def collect_all():
-    """собирает все индикаторы в один список для отправки в модель"""
-    for team, indic in soccer_dict.items():
-        for _, value in under_dict.items():
-            if indic[0:6] == value[0:6]:
-                all_ind = [
-                    team, indic[0], indic[1], indic[2], indic[3], indic[4], indic[5], indic[6],
-                    indic[7], indic[8], indic[-4], indic[-3], indic[-2], indic[-1], value[7],
-                    value[8], value[9], value[10], value[11], value[12], value[13], value[14],
-                    value[15], value[16]
-                ]
-                model_pack(all_ind)
-
-
 def model_pack(all_ind: list):
     """отправка данных в модель"""
     model = Team(
@@ -124,7 +111,7 @@ def model_pack(all_ind: list):
         cs=str(all_ind[12]),
         fts=str(all_ind[13]),
         xg=all_ind[14],
-        npgx=float(all_ind[15]),
+        npxg=float(all_ind[15]),
         xga=all_ind[16],
         npxga=float(all_ind[17]),
         npxgd=str(all_ind[18]),
@@ -134,7 +121,7 @@ def model_pack(all_ind: list):
         odc=int(all_ind[22]),
         xpts=all_ind[23]
     )
-    insert_to_db(model)
+    return model
 
 
 def insert_to_db(model: Team):
@@ -143,6 +130,7 @@ def insert_to_db(model: Team):
 
 
 if __name__ == '__main__':
+    START_UNDER = True
     for soccer_liga, under_liga in names.items():
         for index in range(len(years)):
             year = years[index]
@@ -170,6 +158,16 @@ if __name__ == '__main__':
                     logging.warning('Element is not available or connection lost, trying again')
                 else:
                     under_dict = under_handler(bodies)
-                    collect_all()
+                    for team, indic in soccer_dict.items():
+                        for value in under_dict.values():
+                            if indic[0:6] == value[0:6]:
+                                all_ind = [
+                                    team, indic[0], indic[1], indic[2], indic[3], indic[4], indic[5], indic[6],
+                                    indic[7], indic[8], indic[-4], indic[-3], indic[-2], indic[-1], value[7],
+                                    value[8], value[9], value[10], value[11], value[12], value[13], value[14],
+                                    value[15], value[16]
+                                ]
+                                model = model_pack(all_ind)
+                                insert_to_db(model)
                     logging.info(f'Successfully inserted in database')
                     break  # остановка цикла, в котором решаются ошибки
