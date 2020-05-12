@@ -1,4 +1,4 @@
-from .structure import Structure
+from structure import Structure
 from types import MappingProxyType
 
 
@@ -28,6 +28,7 @@ class GameIndicators(Structure):
     :param team2: All data from Team 2
     """
     _fields = MappingProxyType({"match": str, "chances_draw": int, "team1": dict, "team2": dict})
+    _collection = MappingProxyType({"name": "gameIndicators", "key": "match"})
 
     def dict(self):
         self.team1 = self.team1 or TeamIndicators().dict()

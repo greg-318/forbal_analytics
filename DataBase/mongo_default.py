@@ -2,7 +2,6 @@ from types import MappingProxyType
 from datetime import datetime
 import logging
 from pymongo import MongoClient
-from Analytics.models import player, team, game_indicators
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
@@ -65,12 +64,7 @@ class MongoDefault:
         if not check:
             return check
         else:
-            method = MappingProxyType({
-                self.collection.name == "players": player.Player,
-                self.collection.name == "teams": team.Team,
-                self.collection.name == "gameIndicators": game_indicators.GameIndicators
-            })[True](**next(self.collection.find(data)))
-            return method
+            return self.collection.find(data)
 
     def delete(self, data: dict, one: int = 1) -> tuple:
         """
@@ -87,3 +81,9 @@ class MongoDefault:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
+
+    def __str__(self):
+        return "Client: {!s}, Collection: {!s}".format(self.client.address, self.collection.name)
+
+    def __repr__(self):
+        return "{}({!r}, {})".format(self.__class__.__name__, self.client.address, self.collection.name)
