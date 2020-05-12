@@ -25,11 +25,15 @@ driver.add_argument('--window-size=1920,1080')
 driver = webdriver.Chrome(executable_path='./chromedriver', options=driver)
 numbers = ("11", "13", "14", "15", "16", "17", "18")
 
-# COLLECTION = MongoDefault('teams')
+COLLECTION = MongoDefault('teams')
 
 
 def soccer_handler(req):
-    """собирает данные по командам с soccerstats и добавляет в словарь"""
+    """
+    собирает данные по командам с soccerstats и добавляет в словарь
+    :param req: - запроса на soccerstats
+    :return: - [dict] показатели всех команд soccerstats из лиги за конкретный год
+    """
     soccer_inds = dict()
     soccer_soup = bs(req.text, 'html.parser')
     teams = soccer_soup.find('div', class_='eight columns').find_all('tr', class_='odd')
@@ -61,7 +65,11 @@ def soccer_handler(req):
 
 
 def find_under_body(url):
-    """собирает тело таблицы с understat для разбора по командам"""
+    """
+    собирает тело таблицы с understat для разбора по командам
+    :param url: - [str] - ссылка на understat по лиге и году
+    :return: - таблица с показателями
+    """
     driver.get(url)
     global START_UNDER
     if START_UNDER:
@@ -78,7 +86,11 @@ def find_under_body(url):
 
 
 def under_handler(body: list):
-    """обрабатывает данные полученные с understat"""
+    """
+    обрабатывает данные полученные с understat
+    :param body: - таблица с показателями команд лиги с understat
+    :return: - [dict] показатели всех команд understat из лиги за конкретный год
+    """
     under_inds = dict()
     for j in range(len(body)):
         tds = body[j].find_elements_by_tag_name('td')
@@ -95,7 +107,11 @@ def under_handler(body: list):
 
 
 def model_pack(indicators: list):
-    """отправка данных в модель"""
+    """
+    отправка данных в модель
+    :param indicators: [list] - список со всеми показателями команды
+    :return: - модель Team
+    """
     model = Team(
         name=str(indicators[0]),
         gp=int(indicators[1]),
@@ -104,30 +120,33 @@ def model_pack(indicators: list):
         l=int(indicators[4]),
         gf=int(indicators[5]),
         ga=int(indicators[6]),
-        gd=str(indicators[7]),
+        gd=int(indicators[7]),
         pts=int(indicators[8]),
-        form=indicators[9],
+        # form=indicators[9],
         ppg=float(indicators[10]),
         last8=float(indicators[11]),
-        cs=str(indicators[12]),
-        fts=str(indicators[13]),
-        xg=indicators[14],
+        cs=float(indicators[12].replace('%', ''))/100,
+        fts=float(indicators[13].replace('%', ''))/100,
+        xg=float(indicators[14]['value']),
         npxg=float(indicators[15]),
-        xga=indicators[16],
+        xga=float(indicators[16]['value']),
         npxga=float(indicators[17]),
-        npxgd=str(indicators[18]),
+        npxgd=float(indicators[18]),
         ppda=float(indicators[19]),
         oppda=float(indicators[20]),
         dc=int(indicators[21]),
         odc=int(indicators[22]),
-        xpts=indicators[23]
+        xpts=float(indicators[23]['value'])
     )
     return model
 
 
 def insert_to_db(model: Team):
-    """добавление данных в бд"""
-    pass
+    """
+    добавление данных в бд
+    :param model: - объект класса Team
+    """
+    COLLECTION.insertUpdate(model['name'], model)
 
 
 if __name__ == '__main__':
