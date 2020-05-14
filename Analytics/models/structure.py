@@ -29,21 +29,8 @@ class TypedProperty:
 class Structure:
     _fields = {}
     _collection = {"name": "", "key": ""}
-    _teams = []
-    _teamindicators = []
-    _gameindicators = []
-    _players = []
-    _noneList = []
 
     def __init__(self, **kwargs):
-        {
-            True: self.__class__._noneList.append,
-            "teams" == self.__class__.__name__.lower(): self.__class__._teams.append,
-            "teamindicators" == self.__class__.__name__.lower(): self.__class__._teamindicators.append,
-            "gameindicators" == self.__class__.__name__.lower(): self.__class__._gameindicators.append,
-            "players" == self.__class__.__name__.lower(): self.__class__._players.append,
-
-         }[True](self)
 
         for name, type_ in self._fields.items():
             setattr(self.__class__, name, TypedProperty(name, type_))
@@ -70,16 +57,19 @@ class Structure:
             response = md.insertUpdate(value_to[key], value_to)
             return response
 
-    def getFromMongo(self, dict):
-        removeFrom = ("_id", "datetime")
+    def getFromMongo(self, uniq_val: dict) -> bool:
+        """
+        :param uniq_val: The value by which needed object is searched
+        :return: bool value
+        """
         with mongod.MongoDefault(self._collection["name"]) as md:
-            response = md.select(dict)
+            response = md.select(uniq_val)
             if response:
                 res = next(response)
-                tuple(res.pop(x) for x in removeFrom)
-                [Structure._gameindicators.pop(index) for index, item in enumerate(Structure._gameindicators)
-                 if self is item]
-                self.__init__(**res)
+                tuple(self.__setattr__(key, val) for key, val in res.items())
+                return True
+            else:
+                return False
 
     def __str__(self):
         return "{!s}".format(self.dict()).replace("''", "None").replace("'", "").strip("{}")
