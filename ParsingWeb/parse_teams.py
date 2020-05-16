@@ -1,13 +1,11 @@
 import logging
 import re
 import time
-
 import requests
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.common.exceptions \
     import ElementClickInterceptedException, NoSuchElementException
-
 from Analytics.models.team import Team
 from DataBase.mongo_default import MongoDefault
 
@@ -72,17 +70,15 @@ def under_handler(body: list):
     :return: - [dict] показатели всех команд understat из лиги за конкретный год
     """
     under_inds = dict()
-    for j in range(len(body)):
-        tds = body[j].find_elements_by_tag_name('td')
-        tds = [td.text for td in tds[1:]]
-        for i in range(len(tds)):
-            if '+' in tds[i] and i != 12:
-                temp = tds[i].split('+')
-                tds[i] = {'value': float(temp[0]), 'dynamic': '+' + temp[1]}
-            elif '-' in tds[i] and i != 12 and re.match(r'\d', tds[i]) is not None:
-                temp = tds[i].split('-')
-                tds[i] = {'value': float(temp[0]), 'dynamic': '-' + temp[1]}
-        under_inds.update({year + '_' + tds[0]: tds[1:]})
+    for ind_body in range(len(body)):
+        cells = body[ind_body].find_elements_by_tag_name('td')
+        cells = [td.text for td in cells[1:]]
+        for ind_cell in range(len(cells)):
+            if '+' in cells[ind_cell] and ind_cell != 12:
+                cells[ind_cell] = cells[ind_cell].split('+')[0]
+            elif '-' in cells[ind_cell] and ind_cell != 12 and re.match(r'\d', cells[ind_cell]) is not None:
+                cells[ind_cell] = cells[ind_cell].split('-')[0]
+        under_inds.update({year + '_' + cells[0]: cells[1:]})
     return under_inds
 
 
@@ -106,16 +102,16 @@ def model_pack(indicators: list):
         last8=float(indicators[11]),
         cs=float(indicators[12].replace('%', ''))/100,
         fts=float(indicators[13].replace('%', ''))/100,
-        xg=float(indicators[14]['value']),
+        xg=float(indicators[14]),
         npxg=float(indicators[15]),
-        xga=float(indicators[16]['value']),
+        xga=float(indicators[16]),
         npxga=float(indicators[17]),
         npxgd=float(indicators[18]),
         ppda=float(indicators[19]),
         oppda=float(indicators[20]),
         dc=int(indicators[21]),
         odc=int(indicators[22]),
-        xpts=float(indicators[23]['value'])
+        xpts=float(indicators[23])
     )
     return model
 
@@ -125,14 +121,11 @@ def insert_to_db(team_name: str, model: Team):
     добавление данных в бд
     :param team_name: [str] - название команды
     :param model: - объект класса Team
+    :return: - ответ от базы данных
     """
     with MongoDefault('teams') as md:
         response, _ = md.insertUpdate(value_uniq_key=team_name, value_to=model.dict())
-        if not response:
-            logging.warning(f'Something happened during insertion {team_name} into the database')
-            return False
-        else:
-            return True
+        return response
 
 
 if __name__ == '__main__':
@@ -154,7 +147,7 @@ if __name__ == '__main__':
                         logging.info(f'Parsing soccerstats for year {year} and league {soccer_liga}')
                         soccer_dict = soccer_handler(soccer_request)
                     else:
-                        logging.warning('Something happens with connection to soccerstats, trying again')
+                        logging.warning('Something happened with connection to soccerstats, trying again')
                         continue
                     try:
                         logging.info(f'Parsing understat for year {year} and league {under_liga}')
@@ -177,7 +170,9 @@ if __name__ == '__main__':
                                         ]
                                         team_model = model_pack(all_ind)
                                         status = insert_to_db(soccer_team, team_model)
-                                        if not status: continue
+                                        if not status:
+                                            logging.warning(f'Something happened while inserting {soccer_team} in database')
+                                            continue
                                         else: break
                         logging.info('Successfully inserted in database')
                         break  # остановка цикла, в котором решаются ошибки
