@@ -3,10 +3,13 @@ import re
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5 import QtCore
 from pymongo import MongoClient
-sys.path.append("D:\Мои документы\Desktop\R&D\Analytics")
-from models import player, team, game_indicators
+sys.path.extend([r"D:\Мои документы\Desktop\R&D\Analytics",
+                 r"D:\Мои документы\Desktop\R&D\Analytics\models"])
 from predict_indicators import number_of_goals_probabilities, \
     match_result_probabilities
+from player import Player
+from team import Team
+from game_indicators import GameIndicators, TeamIndicators
 
 
 class SetContent:
@@ -44,15 +47,15 @@ class SetContent:
         self.setTeam(players1, self.ui.tableWidget_1)
         self.setTeam(players2, self.ui.tableWidget_2)
         self.setMatch([self.match["team1"], self.match["team2"]],
-                      game_indicators.TeamIndicators, self.ui.tableWidget)
-        self.setMatch(self.teams, team.Team, self.ui.tableWidget_3)
+                      TeamIndicators, self.ui.tableWidget)
+        self.setMatch(self.teams, Team, self.ui.tableWidget_3)
         self.setTabs()
         self.setLabels()
         self.setGraphics()
 
     def setTeam(self, players_list, table):
         for p in players_list[:11]:
-            player_dict = player.Player(**p).dict()
+            player_dict = Player(**p).dict()
             for second_index, val in enumerate(player_dict.values()):
                 if second_index == 0:
                     table.cellWidget(players_list.index(p),
@@ -84,18 +87,26 @@ class SetContent:
     def setLabels(self):
         match_list_value = re.findall('\w+', self.match["match"])
         self.ui.label_4.setText(match_list_value[0][-1]+"-"+
-                                (match_list_value[1][0]))
+                                match_list_value[1][0])
         expected_result = match_result_probabilities(self.home, self.away)
-        self.ui.label_3.setText(expected_result[0]+"-"+expected_result[2])
+        self.ui.label_3.setText(f"{expected_result[0]}-{expected_result[2]}")
 
     def setGraphics(self):
         flag = number_of_goals_probabilities(self.home)
+        if len(flag) < 10:
+            while len(flag) < 11:
+                flag.append(flag[0])
+        flag = flag[:10]
         g = self.ui.graphWidget
         g.clear()
         g.plot(self.ui.probabilities, flag, pen=self.ui.blue, symbol="o",
                symbolSize=6, symbolBrush="w")
 
         flag2 = number_of_goals_probabilities(self.away)
+        if len(flag2) < 10:
+            while len(flag2) < 11:
+                flag2.append(flag2[0])
+        flag2 = flag2[:10]
         g2 = self.ui.graphWidget2
         g2.clear()
         g2.plot(self.ui.probabilities, flag2, pen=self.ui.red, symbol="o",
