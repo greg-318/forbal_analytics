@@ -172,5 +172,3 @@ if __name__ == '__main__':
                             logging.info(f'Paste into database'
                                          f' failed. {http} ')
         time.sleep(345600)
-
-
