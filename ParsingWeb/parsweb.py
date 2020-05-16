@@ -105,14 +105,8 @@ def send(name_player, data):
     """
 
     with MongoDefault('players') as md:
-        response = md.insertUpdate(name_player, data)
-        if not response:
-            logging.warning(
-                f'Something happened during insertion {name_player} '
-                f'into the database')
-            return False
-        else:
-            return response
+        response, _ = md.insertUpdate(value_uniq_key=name_player, value_to=data)
+    return response
 
 
 if __name__ == '__main__':
@@ -167,14 +161,11 @@ if __name__ == '__main__':
                         information['yellow'] = int(elem[22])
                         information['red'] = int(elem[23])
                         information['team'] = team
-                        if elem[10] != '0.00':
-                            information['xg'] = float('{:.2f}'.format
+                        information['xg'] = float('{:.2f}'.format
                                                       (float(power(elem[10]))))
-                        if elem[11] != '0.00':
-                            information['npxg'] = \
+                        information['npxg'] = \
                                 float('{:.2f}'.format(float(power(elem[11]))))
-                        if elem[12] != '0.00':
-                            information['xa'] = float('{:.2f}'.format
+                        information['xa'] = float('{:.2f}'.format
                                                       (float(power(elem[12]))))
                         send(elem[1], information)
                         if not send:
