@@ -6,7 +6,6 @@ from pymongo import MongoClient
 from content import SetContent
 from football import Ui_MainWindow
 
-
 class createChooseWidget(QtWidgets.QWidget):
 
     def __init__(self, match):
@@ -48,7 +47,6 @@ class ScrollMatches(QtWidgets.QMessageBox):
                                                for x in all_matches])
         self.completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.searchbar.setCompleter(self.completer)
-
         for match in all_matches:
             item = createChooseWidget(match)
             self.lay.addWidget(item)
@@ -91,12 +89,29 @@ def darkMode():
         yield MainWindow.setStyleSheet("background: #121e29")  # dark_new
 
 
+class MyWindow(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+    def closeEvent(self, event):
+        result = QtWidgets.QMessageBox.question\
+            (self, "Confirm Dialog","Really quit?",
+             QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+             QtWidgets.QMessageBox.No)
+        if result == QtWidgets.QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
+
 if __name__ == "__main__":
 
     # start
 
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    MainWindow = MyWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
