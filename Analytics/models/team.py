@@ -1,4 +1,4 @@
-from .structure import Structure
+from structure import Structure
 from types import MappingProxyType
 
 
@@ -33,3 +33,4 @@ class Team(Structure):
                                 "pts": int, "ppg": float, "last8": float, "cs": float, "fts": float, "xg": float,
                                 "npxg": float, "xga": float, "npxga": float, "npxgd": float, "ppda": float,
                                 "oppda": float, "dc": int, "odc": int, "xpts": float})
+    _collection = MappingProxyType({"name": "teams", "key": "name"})

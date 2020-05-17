@@ -1,3 +1,6 @@
+from DataBase import mongo_default as mongod
+
+
 class TypedProperty:
 
     def __init__(self, name, type_):
@@ -25,6 +28,7 @@ class TypedProperty:
 
 class Structure:
     _fields = {}
+    _collection = {"name": "", "key": ""}
 
     def __init__(self, **kwargs):
 
@@ -39,6 +43,33 @@ class Structure:
         :return: All data for model
         """
         return {name: self.__getattribute__(name) for name in self._fields.keys()}
+
+    def sendToMongo(self):
+        """
+        :return: Response from mongo
+        """
+        if not self._collection["name"]:
+            raise TypeError("Method don't work for this model")
+
+        with mongod.MongoDefault(self._collection["name"]) as md:
+            value_to = self.dict()
+            key = self._collection["key"]
+            response = md.insertUpdate(value_to[key], value_to)
+            return response
+
+    def getFromMongo(self, uniq_val: dict) -> bool:
+        """
+        :param uniq_val: The value by which needed object is searched
+        :return: bool value
+        """
+        with mongod.MongoDefault(self._collection["name"]) as md:
+            response = md.select(uniq_val)
+            if response:
+                res = next(response)
+                tuple(self.__setattr__(key, val) for key, val in res.items())
+                return True
+            else:
+                return False
 
     def __str__(self):
         return "{!s}".format(self.dict()).replace("''", "None").replace("'", "").strip("{}")
