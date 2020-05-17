@@ -44,7 +44,8 @@ class ScrollMatches(QtWidgets.QMessageBox):
 
         self.lay = QtWidgets.QVBoxLayout(self.content)
         self.lay.addWidget(self.searchbar)
-        self.completer = QtWidgets.QCompleter([x["match"] for x in all_matches])
+        self.completer = QtWidgets.QCompleter([x["match"].replace("_", " ")
+                                               for x in all_matches])
         self.completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.searchbar.setCompleter(self.completer)
 
@@ -79,22 +80,15 @@ def chooseMatchesClicked():
 
 def darkMode():
     while True:
-        ui.graphWidget.setBackground('#000000')
-        ui.graphWidget2.setBackground('#000000')
-        yield MainWindow.setStyleSheet("background: black")
         ui.graphWidget.setBackground('#1C1C1C')
         ui.graphWidget2.setBackground('#1C1C1C')
         yield MainWindow.setStyleSheet("background: #1C1C1C")  # brown
-        ui.graphWidget.setBackground('#042926')
-        ui.graphWidget2.setBackground('#042926')
-        yield MainWindow.setStyleSheet("background: #042926")  # green
         ui.graphWidget.setBackground('#011F36')
         ui.graphWidget2.setBackground('#011F36')
         yield MainWindow.setStyleSheet("background: #011F36;")  # blue
         ui.graphWidget.setBackground('#121e29')
         ui.graphWidget2.setBackground('#121e29')
         yield MainWindow.setStyleSheet("background: #121e29")  # dark_new
-        yield MainWindow.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
 
 
 if __name__ == "__main__":
@@ -107,6 +101,7 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
+    MainWindow.setStyleSheet("background: #121e29")
 
     # main
 
