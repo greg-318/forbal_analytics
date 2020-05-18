@@ -6,16 +6,18 @@ from pymongo import MongoClient
 from content import SetContent
 from football import Ui_MainWindow
 
+
 class createChooseWidget(QtWidgets.QWidget):
 
     def __init__(self, match):
         super(createChooseWidget, self).__init__()
-        self.match = match
-        self.lbl = QtWidgets.QPushButton(self.match["match"].replace("_", " "))
+        self.match_info = match
+        self.name = self.match_info['match']
+        self.lbl = QtWidgets.QPushButton(self.name.replace("_", " "))
         self.hbox = QtWidgets.QHBoxLayout()
         self.hbox.addWidget(self.lbl)
         self.setLayout(self.hbox)
-        self.lbl.clicked.connect(partial(SetContent, self.match, ui))
+        self.lbl.clicked.connect(partial(SetContent, self.match_info, ui))
 
 
 class ScrollMatches(QtWidgets.QMessageBox):
@@ -97,7 +99,7 @@ class MyWindow(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):
         result = QtWidgets.QMessageBox.question\
-            (self, "Confirm Dialog","Really quit?",
+            (self, "Выход","Вы действительно хотите выйти?",
              QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
              QtWidgets.QMessageBox.No)
         if result == QtWidgets.QMessageBox.Yes:
