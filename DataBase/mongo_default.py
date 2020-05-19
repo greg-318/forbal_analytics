@@ -1,9 +1,6 @@
 from types import MappingProxyType
 from datetime import datetime
-import logging
 from pymongo import MongoClient
-
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
 
 class MongoDefault:
