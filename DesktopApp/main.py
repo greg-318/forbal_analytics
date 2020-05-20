@@ -98,15 +98,26 @@ class MyWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
     def closeEvent(self, event):
-        result = QtWidgets.QMessageBox.question\
-            (self, "Выход","Вы действительно хотите выйти?",
-             QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-             QtWidgets.QMessageBox.No)
-        if result == QtWidgets.QMessageBox.Yes:
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("Выход")
+        msg_icon = QtGui.QIcon()
+        msg_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
+        msg.setWindowIcon(msg_icon)
+        msg.setIcon(QtWidgets.QMessageBox.Question)
+        msg.setText("Вы действительно хотите выйти?")
+        button_yes = msg.addButton("Да", QtWidgets.QMessageBox.AcceptRole)
+        button_no = msg.addButton("Нет", QtWidgets.QMessageBox.RejectRole)
+        msg.setDefaultButton(button_yes)
+        msg.exec_()
+        if msg.clickedButton() == button_yes:
             event.accept()
         else:
             event.ignore()
 
+
+class MyMessageBox(QtWidgets.QMessageBox):
+    def __init__(self):
+        super(MyMessageBox, self).__init__()
 
 if __name__ == "__main__":
 
