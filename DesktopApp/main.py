@@ -103,7 +103,6 @@ class MyWindow(QtWidgets.QMainWindow):
         msg_icon = QtGui.QIcon()
         msg_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
         msg.setWindowIcon(msg_icon)
-        msg.setIcon(QtWidgets.QMessageBox.Question)
         msg.setText("Вы действительно хотите выйти?")
         button_yes = msg.addButton("Да", QtWidgets.QMessageBox.AcceptRole)
         button_no = msg.addButton("Нет", QtWidgets.QMessageBox.RejectRole)
@@ -114,10 +113,6 @@ class MyWindow(QtWidgets.QMainWindow):
         else:
             event.ignore()
 
-
-class MyMessageBox(QtWidgets.QMessageBox):
-    def __init__(self):
-        super(MyMessageBox, self).__init__()
 
 if __name__ == "__main__":
 
