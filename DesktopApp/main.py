@@ -11,12 +11,13 @@ class createChooseWidget(QtWidgets.QWidget):
 
     def __init__(self, match):
         super(createChooseWidget, self).__init__()
-        self.match = match
-        self.lbl = QtWidgets.QPushButton(self.match["match"].replace("_", " "))
+        self.match_info = match
+        self.name = self.match_info['match']
+        self.lbl = QtWidgets.QPushButton(self.name.replace("_", " "))
         self.hbox = QtWidgets.QHBoxLayout()
         self.hbox.addWidget(self.lbl)
         self.setLayout(self.hbox)
-        self.lbl.clicked.connect(partial(SetContent, self.match, ui))
+        self.lbl.clicked.connect(partial(SetContent, self.match_info, ui))
 
 
 class ScrollMatches(QtWidgets.QMessageBox):
@@ -48,7 +49,6 @@ class ScrollMatches(QtWidgets.QMessageBox):
                                                for x in all_matches])
         self.completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.searchbar.setCompleter(self.completer)
-
         for match in all_matches:
             item = createChooseWidget(match)
             self.lay.addWidget(item)
@@ -91,12 +91,35 @@ def darkMode():
         yield MainWindow.setStyleSheet("background: #121e29")  # dark_new
 
 
+class MyWindow(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+    def closeEvent(self, event):
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("Выход")
+        msg_icon = QtGui.QIcon()
+        msg_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
+        msg.setWindowIcon(msg_icon)
+        msg.setText("Вы действительно хотите выйти?")
+        button_yes = msg.addButton("Да", QtWidgets.QMessageBox.AcceptRole)
+        button_no = msg.addButton("Нет", QtWidgets.QMessageBox.RejectRole)
+        msg.setDefaultButton(button_yes)
+        msg.exec_()
+        if msg.clickedButton() == button_yes:
+            event.accept()
+        else:
+            event.ignore()
+
+
 if __name__ == "__main__":
 
     # start
 
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    MainWindow = MyWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
