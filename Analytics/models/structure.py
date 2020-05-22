@@ -1,4 +1,6 @@
-from DataBase import mongo_default as mongod
+import sys
+sys.path.extend(["../../DataBase/"])
+import mongo_default as mongod
 
 
 class TypedProperty:
@@ -72,7 +74,7 @@ class Structure:
                 return False
 
     def __str__(self):
-        return "{!s}".format(self.dict()).replace("''", "None").replace("'", "").strip("{}")
+        return "{!s}".format(self.__dict__).replace("''", "None").replace("'", "").strip("{}")
 
     def __repr__(self):
         return "{!r}".format(self.__class__)
