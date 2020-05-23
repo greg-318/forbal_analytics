@@ -4,11 +4,12 @@ import pyqtgraph as pg
 
 class Ui_MainWindow(object):
     """
-    интерфейс окна
+    настройки графического интерфейса окна
     """
     def setup_ui(self, MainWindow):
         """
         начальные настройки интерфейса
+        :param MainWindow: - окно приложения
         """
         MainWindow.setObjectName("MainWindow")
         MainWindow.setMinimumSize(800,700)
@@ -19,6 +20,26 @@ class Ui_MainWindow(object):
         MainWindow.setWindowIcon(app_icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.centralwidget.setGeometry(QtCore.QRect(10, 100, 1000, 1000))
+
+        self.contacts = QtWidgets.QWidget(self.centralwidget)
+        self.contacts.setGeometry(QtCore.QRect(0, 5, 160, 50))
+        self.vk = QtWidgets.QLineEdit(self.contacts)  # ссылка вк
+        self.vk.setReadOnly(True)
+        self.vk.setStyleSheet("QLineEdit{border:none}")
+        self.vk.setText('tab_betting')
+        self.vk.setGeometry(QtCore.QRect(25, 0, 130, 20))
+        self.vk_icon = QtWidgets.QLabel(self.contacts)  # иконка вк
+        self.vk_icon.setPixmap(QtGui.QPixmap("icons/vk.png"))
+        self.vk_icon.setGeometry(QtCore.QRect(10, 0, 20, 20))
+        self.tg = QtWidgets.QLineEdit(self.contacts)  # ссылка телега
+        self.tg.setReadOnly(True)
+        self.tg.setStyleSheet("QLineEdit{border:none}")
+        self.tg.setText("@football_analytics_RD")
+        self.tg.setGeometry(QtCore.QRect(25, 20, 130, 20))
+        self.tg_icon = QtWidgets.QLabel(self.contacts)  # иконка телега
+        self.tg_icon.setPixmap(QtGui.QPixmap("icons/tg.png"))
+        self.tg_icon.setGeometry(QtCore.QRect(10, 20, 20, 20))
 
         self.pixmap = QtGui.QPixmap("icons/image.png")
         self.lbl = QtWidgets.QLabel(self.centralwidget)
@@ -315,9 +336,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslate_ui(self, MainWindow):
-        """
-        наполнение виджетов текстом
-        """
+
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow",
                                              "Football Analytics"))

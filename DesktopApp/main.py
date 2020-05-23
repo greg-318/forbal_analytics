@@ -8,9 +8,7 @@ from football import Ui_MainWindow
 
 
 class CreateChooseWidget(QtWidgets.QWidget):
-    """
-    пункт в виджете выбора матча
-    """
+
     def __init__(self, match):
         super(CreateChooseWidget, self).__init__()
         self.match_info = match
@@ -23,9 +21,7 @@ class CreateChooseWidget(QtWidgets.QWidget):
 
 
 class ScrollMatches(QtWidgets.QMessageBox):
-    """
-    виджет с выбором матча
-    """
+
     def __init__(self, all_matches, *args, **kwargs):
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
         self.setWindowTitle("Выбор матча")
@@ -77,9 +73,7 @@ class ScrollMatches(QtWidgets.QMessageBox):
 
 
 def choose_matches_clicked():
-    """
-    загрузка матчей из бд
-    """
+
     client = MongoClient("mongodb://34.91.248.129:27017/")
     db_conn = client["football"]
     col_conn = db_conn["gameIndicators"]
@@ -90,7 +84,8 @@ def choose_matches_clicked():
 
 def dark_mode():
     """
-    изменение темы окна
+    изменение цветовой темы окна
+    :yield: - тема
     """
     while True:
         MainWindow.ui.graphWidget.setBackground('#1C1C1C')
@@ -106,7 +101,7 @@ def dark_mode():
 
 class MyWindow(QtWidgets.QMainWindow):
     """
-    главное окно
+    класс окна приложения, задает интерфейс и перехватывает события
     """
     def __init__(self):
         super(MyWindow, self).__init__()
@@ -115,7 +110,8 @@ class MyWindow(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):
         """
-        перехват события закрытия окна
+        перехват события закрытия окна, вывод окна с вопросом при
+        возникновении события
         :param event: - событие
         """
         msg = QtWidgets.QMessageBox()
@@ -135,18 +131,17 @@ class MyWindow(QtWidgets.QMainWindow):
 
     def resizeEvent(self, event):
         """
-        перехват события изменения окна
+        перехват события изменения размера окна, изменение размеров элементов
         :param event: - событие
         """
         self.w = self.size().width()
         self.h = self.size().height()
-        #print(self.w, self.h)
+        self.ui.contacts.setGeometry(QtCore.QRect(0, 5, 160, 50))  # контакты
         self.ui.tabWidget.setGeometry(QtCore.QRect(
             10, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
         main_table_w = self.ui.tabWidget.width()
         main_table_h = self.ui.tabWidget.height()
-        # print(main_table_w, main_table_h)
-
+        self.ui.lbl.setGeometry(QtCore.QRect(230, 10, 600, 60))
         self.ui.tableWidget_1.setGeometry(QtCore.QRect(
             0, 0, main_table_w - 10, main_table_h - 30))  # команда 1
         self.ui.tableWidget_2.setGeometry(QtCore.QRect(
@@ -177,6 +172,7 @@ class MyWindow(QtWidgets.QMainWindow):
         :param main_table_h: - высота главной таблицы
         """
         indent = (self.w - main_table_w) / 2
+        self.ui.contacts.setGeometry(QtCore.QRect(indent, 5, 160, 50))
         self.ui.lbl.setGeometry(QtCore.QRect(indent + 230, 10, 600, 60))  # заголовок
         self.ui.tabWidget.setGeometry(QtCore.QRect(
             indent, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
@@ -196,15 +192,6 @@ class MyWindow(QtWidgets.QMainWindow):
             main_table_w / 2 - 10, 120, main_table_w / 2, main_table_h * 0.64))  # поле правого графика
         self.ui.graphWidget2.setGeometry(QtCore.QRect(
             0, 0, main_table_w / 2, main_table_h * 0.64))  # правый график
-
-
-# class Popup(QtWidgets.QWidget):
-#     def __init__(self):
-#         super(Popup, self).__init__()
-#     def p(self, e):
-#         dc = QtGui.QPainter()
-#         dc.drawLine(0, 0, 100, 100)
-#         dc.drawLine(100, 0, 0, 100)
 
 
 if __name__ == "__main__":
