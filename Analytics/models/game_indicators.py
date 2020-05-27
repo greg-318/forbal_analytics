@@ -48,10 +48,11 @@ class GameIndicators(Structure):
     :param team1: All data from Team 1
     :param team2: All data from Team 2
     """
-    _fields = MappingProxyType({"match": str, "chances_draw": int, "team1": dict, "team2": dict})
+    _fields = MappingProxyType({"match": str, "all": dict, "first": dict, "second": dict})
     _collection = MappingProxyType({"name": "gameIndicators", "key": "match"})
 
-    # def dict(self):
-    #     self.team1 = self.team1 or TeamIndicators().dict()
-    #     self.team2 = self.team2 or TeamIndicators().dict()
-    #     return super().dict()
+    def dict(self):
+        self.all = self.team1 or TeamIndicators().dict()
+        self.first = self.team1 or TeamIndicators().dict()
+        self.second = self.team2 or TeamIndicators().dict()
+        return super().dict()
