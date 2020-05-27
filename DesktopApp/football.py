@@ -3,17 +3,43 @@ import pyqtgraph as pg
 
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    """
+    настройки графического интерфейса окна
+    """
+    def setup_ui(self, MainWindow):
+        """
+        начальные настройки интерфейса
+        :param MainWindow: - окно приложения
+        """
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setFixedSize(800, 769)
+        MainWindow.setMinimumSize(800,700)
         app_icon = QtGui.QIcon()
         app_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
         app_icon.addFile('icons/ball-24.png', QtCore.QSize(24, 24))
         app_icon.addFile('icons/ball-32.png', QtCore.QSize(32, 32))
         MainWindow.setWindowIcon(app_icon)
-
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.centralwidget.setGeometry(QtCore.QRect(10, 100, 1000, 1000))
+
+        self.contacts = QtWidgets.QWidget(self.centralwidget)
+        self.contacts.setGeometry(QtCore.QRect(0, 5, 160, 50))
+        self.vk = QtWidgets.QLineEdit(self.contacts)  # ссылка вк
+        self.vk.setReadOnly(True)
+        self.vk.setStyleSheet("QLineEdit{border:none}")
+        self.vk.setText('tab_betting')
+        self.vk.setGeometry(QtCore.QRect(25, 0, 130, 20))
+        self.vk_icon = QtWidgets.QLabel(self.contacts)  # иконка вк
+        self.vk_icon.setPixmap(QtGui.QPixmap("icons/vk.png"))
+        self.vk_icon.setGeometry(QtCore.QRect(10, 0, 20, 20))
+        self.tg = QtWidgets.QLineEdit(self.contacts)  # ссылка телега
+        self.tg.setReadOnly(True)
+        self.tg.setStyleSheet("QLineEdit{border:none}")
+        self.tg.setText("@football_analytics_RD")
+        self.tg.setGeometry(QtCore.QRect(25, 20, 130, 20))
+        self.tg_icon = QtWidgets.QLabel(self.contacts)  # иконка телега
+        self.tg_icon.setPixmap(QtGui.QPixmap("icons/tg.png"))
+        self.tg_icon.setGeometry(QtCore.QRect(10, 20, 20, 20))
 
         self.pixmap = QtGui.QPixmap("icons/image.png")
         self.lbl = QtWidgets.QLabel(self.centralwidget)
@@ -21,7 +47,8 @@ class Ui_MainWindow(object):
         self.lbl.setGeometry(QtCore.QRect(230, 10, 600, 60))
 
         self.tableWidget_3 = QtWidgets.QTableWidget(self.centralwidget)
-        self.tableWidget_3.setGeometry(QtCore.QRect(10, 480, 781, 111))
+        self.tableWidget_3.setGeometry(QtCore.QRect(10, 480, 800, 111))
+        self.tableWidget_3.setMaximumSize(1020, 200)
         self.tableWidget_3.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         font = QtGui.QFont()
@@ -69,6 +96,7 @@ class Ui_MainWindow(object):
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setGeometry(QtCore.QRect(10, 50, 781, 411))
         self.tabWidget.setObjectName("tabWidget")
+        self.tabWidget.setMaximumSize(1020, 537)
         self.team_1 = QtWidgets.QWidget()
         self.team_1.setObjectName("team_1")
         self.tableWidget_1 = QtWidgets.QTableWidget(self.team_1)
@@ -258,6 +286,7 @@ class Ui_MainWindow(object):
 
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox.setGeometry(QtCore.QRect(10, 610, 781, 151))
+        self.groupBox.setMaximumSize(1020, 151)
         self.groupBox.setObjectName("groupBox")
         self.label = QtWidgets.QLabel(self.groupBox)
         self.label.setGeometry(QtCore.QRect(10, 30, 151, 16))
@@ -299,14 +328,15 @@ class Ui_MainWindow(object):
         self.chooiseMatch.setObjectName("chooiseMatch")
         MainWindow.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(MainWindow)
+        self.retranslate_ui(MainWindow)
         self.tabWidget.setCurrentIndex(2)
         self.centralwidget.setStyleSheet(
             "QToolTip { color: #ffffff; background-color: #000000; "
             "border: 0px; }")
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslate_ui(self, MainWindow):
+
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow",
                                              "Football Analytics"))
