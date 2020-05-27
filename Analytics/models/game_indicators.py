@@ -52,7 +52,7 @@ class GameIndicators(Structure):
     _collection = MappingProxyType({"name": "gameIndicators", "key": "match"})
 
     def dict(self):
-        self.all = self.team1 or TeamIndicators().dict()
-        self.first = self.team1 or TeamIndicators().dict()
-        self.second = self.team2 or TeamIndicators().dict()
+        self.all = self.all or TeamIndicators().dict()
+        self.first = self.first or TeamIndicators().dict()
+        self.second = self.second or TeamIndicators().dict()
         return super().dict()
