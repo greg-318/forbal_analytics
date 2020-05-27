@@ -7,16 +7,17 @@ from content import SetContent
 from football import Ui_MainWindow
 
 
-class createChooseWidget(QtWidgets.QWidget):
+class CreateChooseWidget(QtWidgets.QWidget):
 
     def __init__(self, match):
-        super(createChooseWidget, self).__init__()
-        self.match = match
-        self.lbl = QtWidgets.QPushButton(self.match["match"].replace("_", " "))
+        super(CreateChooseWidget, self).__init__()
+        self.match_info = match
+        self.name = self.match_info['match']
+        self.lbl = QtWidgets.QPushButton(self.name.replace("_", " "))
         self.hbox = QtWidgets.QHBoxLayout()
         self.hbox.addWidget(self.lbl)
         self.setLayout(self.hbox)
-        self.lbl.clicked.connect(partial(SetContent, self.match, ui))
+        self.lbl.clicked.connect(partial(SetContent, self.match_info, MainWindow.ui))
 
 
 class ScrollMatches(QtWidgets.QMessageBox):
@@ -48,9 +49,8 @@ class ScrollMatches(QtWidgets.QMessageBox):
                                                for x in all_matches])
         self.completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.searchbar.setCompleter(self.completer)
-
         for match in all_matches:
-            item = createChooseWidget(match)
+            item = CreateChooseWidget(match)
             self.lay.addWidget(item)
             self.widgets.append(item)
         spacer = QtWidgets.QSpacerItem(1, 1, QtWidgets.QSizePolicy.Minimum,
@@ -62,6 +62,9 @@ class ScrollMatches(QtWidgets.QMessageBox):
         self.setStyleSheet("QScrollArea{min-width:300 px; min-height: 400px}")
 
     def update_display(self, text):
+        """
+        сокрытие или показ матчей в соответствии с текстом в поисковой стркое
+        """
         for widget in self.widgets:
             if text.lower() in widget.name.lower():
                 widget.show()
@@ -69,7 +72,8 @@ class ScrollMatches(QtWidgets.QMessageBox):
                 widget.hide()
 
 
-def chooseMatchesClicked():
+def choose_matches_clicked():
+
     client = MongoClient("mongodb://34.91.248.129:27017/")
     db_conn = client["football"]
     col_conn = db_conn["gameIndicators"]
@@ -78,17 +82,120 @@ def chooseMatchesClicked():
     result.exec_()
 
 
-def darkMode():
+def dark_mode():
+    """
+    изменение цветовой темы окна
+    :yield: - тема
+    """
     while True:
-        ui.graphWidget.setBackground('#1C1C1C')
-        ui.graphWidget2.setBackground('#1C1C1C')
+        MainWindow.ui.graphWidget.setBackground('#1C1C1C')
+        MainWindow.ui.graphWidget2.setBackground('#1C1C1C')
         yield MainWindow.setStyleSheet("background: #1C1C1C")  # brown
-        ui.graphWidget.setBackground('#011F36')
-        ui.graphWidget2.setBackground('#011F36')
+        MainWindow.ui.graphWidget.setBackground('#011F36')
+        MainWindow.ui.graphWidget2.setBackground('#011F36')
         yield MainWindow.setStyleSheet("background: #011F36;")  # blue
-        ui.graphWidget.setBackground('#121e29')
-        ui.graphWidget2.setBackground('#121e29')
+        MainWindow.ui.graphWidget.setBackground('#121e29')
+        MainWindow.ui.graphWidget2.setBackground('#121e29')
         yield MainWindow.setStyleSheet("background: #121e29")  # dark_new
+
+
+class MyWindow(QtWidgets.QMainWindow):
+    """
+    класс окна приложения, задает интерфейс и перехватывает события
+    """
+    def __init__(self):
+        super(MyWindow, self).__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setup_ui(self)
+
+    def closeEvent(self, event):
+        """
+        перехват события закрытия окна, вывод окна с вопросом при
+        возникновении события
+        :param event: - событие
+        """
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("Выход")
+        msg_icon = QtGui.QIcon()
+        msg_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
+        msg.setWindowIcon(msg_icon)
+        msg.setText("Вы действительно хотите выйти?")
+        button_yes = msg.addButton("Да", QtWidgets.QMessageBox.AcceptRole)
+        msg.addButton("Нет", QtWidgets.QMessageBox.RejectRole)
+        msg.setDefaultButton(button_yes)
+        msg.exec_()
+        if msg.clickedButton() == button_yes:
+            event.accept()
+        else:
+            event.ignore()
+
+    def resizeEvent(self, event):
+        """
+        перехват события изменения размера окна, изменение размеров элементов
+        :param event: - событие
+        """
+        self.w = self.size().width()
+        self.h = self.size().height()
+        self.ui.contacts.setGeometry(QtCore.QRect(0, 5, 160, 50))  # контакты
+        self.ui.tabWidget.setGeometry(QtCore.QRect(
+            10, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
+        main_table_w = self.ui.tabWidget.width()
+        main_table_h = self.ui.tabWidget.height()
+        self.ui.lbl.setGeometry(QtCore.QRect(230, 10, 600, 60))
+        self.ui.tableWidget_1.setGeometry(QtCore.QRect(
+            0, 0, main_table_w - 10, main_table_h - 30))  # команда 1
+        self.ui.tableWidget_2.setGeometry(QtCore.QRect(
+            0, 0, main_table_w - 10, main_table_h - 30))  # команда 2
+        self.ui.tableWidget_3.setGeometry(QtCore.QRect(
+            10, main_table_h + 70, self.w * 0.97, 111))  # показатели команд
+        self.ui.groupBox.setGeometry(QtCore.QRect(
+            10, main_table_h + 200, self.w * 0.97, 151))  # другие расчеты
+        self.ui.pushButton_2.setGeometry(QtCore.QRect(
+            main_table_w * 0.78, 30, 130, 25))  # кнопка сменить тему
+        self.ui.chooiseMatch.setGeometry(QtCore.QRect(
+            main_table_w * 0.78, 60, 130, 25))  # кнопка выбор матча
+        self.ui.graphicsView.setGeometry(QtCore.QRect(
+            0, 120, main_table_w / 2, main_table_h * 0.72))  # поле для левого
+        # графика
+        self.ui.graphWidget.setGeometry(QtCore.QRect(
+            0, 0, main_table_w / 2, main_table_h * 0.72))  # левый график
+        self.ui.graphicsView2.setGeometry(QtCore.QRect(
+            main_table_w/2-10, 120, main_table_w / 2, main_table_h * 0.72))
+        # поле правого графика
+        self.ui.graphWidget2.setGeometry(QtCore.QRect(
+            0, 0, main_table_w / 2, main_table_h * 0.72))  # правый график
+        if main_table_w >= 1020:
+            self._centralize_widgets(main_table_w, main_table_h)
+
+    def _centralize_widgets(self, main_table_w, main_table_h):
+        """
+        расположение всех виджетов по центру окна
+        :param main_table_w: - ширина главной таблицы
+        :param main_table_h: - высота главной таблицы
+        """
+        indent = (self.w - main_table_w) / 2
+        self.ui.contacts.setGeometry(QtCore.QRect(indent, 5, 160, 50))
+        self.ui.lbl.setGeometry(QtCore.QRect(indent + 230, 10, 600, 60))  # заголовок
+        self.ui.tabWidget.setGeometry(QtCore.QRect(
+            indent, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
+        self.ui.tableWidget_1.setGeometry(QtCore.QRect(
+            0, 0, main_table_w - 10, main_table_h - 30))  # команда 1
+        self.ui.tableWidget_2.setGeometry(QtCore.QRect(
+            0, 0, main_table_w - 10, main_table_h - 30))  # команда 2
+        self.ui.tableWidget_3.setGeometry(QtCore.QRect(
+            indent, main_table_h + 70, self.w * 0.97, 111))  # показатели
+        self.ui.groupBox.setGeometry(QtCore.QRect(
+            indent, main_table_h + 200, self.w * 0.97, 151))  # другие расчет
+        self.ui.graphicsView.setGeometry(QtCore.QRect(
+            0, 120, main_table_w / 2, main_table_h * 0.72))  # поле для левого
+        # графика
+        self.ui.graphWidget.setGeometry(QtCore.QRect(
+            0, 0, main_table_w / 2, main_table_h * 0.72))  # левый график
+        self.ui.graphicsView2.setGeometry(QtCore.QRect(
+            main_table_w / 2 - 10, 120, main_table_w / 2, main_table_h * 0.72))
+        # поле правого графика
+        self.ui.graphWidget2.setGeometry(QtCore.QRect(
+            0, 0, main_table_w / 2, main_table_h * 0.72))  # правый график
 
 
 if __name__ == "__main__":
@@ -96,17 +203,15 @@ if __name__ == "__main__":
     # start
 
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    MainWindow = MyWindow()
+
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
     MainWindow.setStyleSheet("background: #121e29")
-
+    MainWindow.show()
     # main
 
-    ui.chooiseMatch.clicked.connect(chooseMatchesClicked)
-    ui.pushButton_2.clicked.connect(partial(next, (darkMode())))
+    MainWindow.ui.chooiseMatch.clicked.connect(choose_matches_clicked)
+    MainWindow.ui.pushButton_2.clicked.connect(partial(next, (dark_mode())))
 
     # exit
 
