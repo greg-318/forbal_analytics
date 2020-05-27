@@ -2,7 +2,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
 import time
-from ParsingWeb.config import url, years, ligues
+from old.config import url, years, ligues
 import logging
 import requests
 import re
