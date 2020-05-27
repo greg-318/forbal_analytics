@@ -3,12 +3,14 @@ import re
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5 import QtCore
 from pymongo import MongoClient
-sys.path.extend([r"D:\Мои документы\Desktop\R&D\Analytics",
-                 r"D:\Мои документы\Desktop\R&D\Analytics\models"])
+sys.path.extend([r"C:\Users\Гоги\PycharmProjects\R-D\Analytics",
+                 r"C:\Users\Гоги\PycharmProjects\R-D\Analytics\models",
+                 r"C:\Users\Гоги\PycharmProjects\R-D\DataBase"]
+                )
+print(sys.path)
 from predict_indicators import number_of_goals_probabilities, \
     match_result_probabilities
-from player import Player
-from team import Team
+from team import Team, Player
 from game_indicators import GameIndicators, TeamIndicators
 
 
@@ -99,7 +101,7 @@ class SetContent:
         flag = flag[:10]
         g = self.ui.graphWidget
         g.clear()
-        g.plot(self.ui.probabilities, flag, pen=self.ui.blue, symbol="o",
+        g.plot(self.ui.probabilities, flag, pen=self.ui.red, symbol="o",
                symbolSize=6, symbolBrush="w")
 
         flag2 = number_of_goals_probabilities(self.away)
@@ -109,5 +111,5 @@ class SetContent:
         flag2 = flag2[:10]
         g2 = self.ui.graphWidget2
         g2.clear()
-        g2.plot(self.ui.probabilities, flag2, pen=self.ui.red, symbol="o",
+        g2.plot(self.ui.probabilities, flag2, pen=self.ui.blue, symbol="o",
                 symbolSize=6, symbolBrush="w")

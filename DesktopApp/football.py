@@ -260,10 +260,10 @@ class Ui_MainWindow(object):
         self.graphWidget.showGrid(x=1, y=1)
         self.blue = pg.mkPen(color=(222, 193, 78))
         self.red = pg.mkPen(color=(42, 187, 155))
-        self.probabilities = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        self.probabilities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         shots = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
         # shots2 = [50, 35, 44, 22, 38, 32, 27, 38, 32, 44]
-        self.graphWidget.plot(self.probabilities, shots, pen=self.blue,
+        self.graphWidget.plot(self.probabilities, shots, pen=self.red,
                               symbol="o", symbolSize=6, symbolBrush="w")
         # self.graphWidget.plot(hour, temperature_2, pen=red, symbol="o",
         #                       symbolSize=6, symbolBrush="w")
@@ -280,7 +280,7 @@ class Ui_MainWindow(object):
         # g2shots2 = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
         # self.graphWidget2.plot(hour, g2temperature, pen=blue, symbol="o",
         #                        symbolSize=6, symbolBrush="w")
-        self.graphWidget2.plot(self.probabilities, g2shots, pen=self.red,
+        self.graphWidget2.plot(self.probabilities, g2shots, pen=self.blue,
                                symbol="o", symbolSize=6, symbolBrush="w")
         self.tabWidget.addTab(self.tab_3, "")
 
