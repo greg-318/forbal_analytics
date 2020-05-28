@@ -174,10 +174,7 @@ class MyWindow(QtWidgets.QMainWindow):
         if main_table_w >= 1020:
             self._centralize_widgets(main_table_w, main_table_h)
 
-    # def mouseMoveEvent(self, event):
-    #     logging.info(event.pos())
-    # def enterEvent(self, event):
-    #     print(event.pos())
+
 
     def _centralize_widgets(self, main_table_w, main_table_h):
         """
