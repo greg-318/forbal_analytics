@@ -5,9 +5,6 @@ import qdarkstyle
 from pymongo import MongoClient
 from content import SetContent
 from football import Ui_MainWindow
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 
 class CreateChooseWidget(QtWidgets.QWidget):
@@ -112,8 +109,6 @@ class MyWindow(QtWidgets.QMainWindow):
         super(MyWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setup_ui(self)
-        self.installEventFilter(self)
-        self.setMouseTracking(True)
 
     def closeEvent(self, event):
         """
@@ -173,7 +168,6 @@ class MyWindow(QtWidgets.QMainWindow):
             0, 0, main_table_w / 2, main_table_h * 0.65))  # правый график
         if main_table_w >= 1020:
             self._centralize_widgets(main_table_w, main_table_h)
-
 
 
     def _centralize_widgets(self, main_table_w, main_table_h):
