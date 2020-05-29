@@ -258,12 +258,14 @@ class Ui_MainWindow(object):
         self.graphWidget.setBackground('#121e29')
         self.graphWidget.setMouseEnabled(x=False, y=False)
         self.graphWidget.showGrid(x=1, y=1)
-        self.blue = pg.mkPen(color=(222, 193, 78))
-        self.red = pg.mkPen(color=(42, 187, 155))
-        self.probabilities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        self.graphWidget.addLegend()
+        self.blue = pg.mkPen(color=(222, 193, 78), width=2)
+        self.red = pg.mkPen(color=(42, 187, 155), width=2)
+        self.probabilities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         shots = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
         # shots2 = [50, 35, 44, 22, 38, 32, 27, 38, 32, 44]
         self.graphWidget.plot(self.probabilities, shots, pen=self.red,
+                              name="-Вероятность забить кол-во голов",
                               symbol="o", symbolSize=6, symbolBrush="w")
         # self.graphWidget.plot(hour, temperature_2, pen=red, symbol="o",
         #                       symbolSize=6, symbolBrush="w")
@@ -276,11 +278,13 @@ class Ui_MainWindow(object):
         self.graphWidget2.setBackground('#121e29')
         self.graphWidget2.setMouseEnabled(x=False, y=False)
         self.graphWidget2.showGrid(x=1, y=1)
+        self.graphWidget2.addLegend()
         g2shots = [50, 35, 44, 22, 38, 32, 27, 38, 32, 44]
         # g2shots2 = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
         # self.graphWidget2.plot(hour, g2temperature, pen=blue, symbol="o",
         #                        symbolSize=6, symbolBrush="w")
         self.graphWidget2.plot(self.probabilities, g2shots, pen=self.blue,
+                               name="-Вероятность забить кол-во голов",
                                symbol="o", symbolSize=6, symbolBrush="w")
         self.tabWidget.addTab(self.tab_3, "")
 
