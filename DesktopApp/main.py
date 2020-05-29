@@ -26,7 +26,9 @@ class ScrollMatches(QtWidgets.QMessageBox):
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
         self.setWindowTitle("Выбор матча")
         self.setWindowIcon(QtGui.QIcon("icons/match-16.png"))
-        self.setStandardButtons(QtWidgets.QMessageBox.Close)
+        self.button_close = self.addButton('Закрыть',
+                                           QtWidgets.QMessageBox.AcceptRole)
+        self.setDefaultButton(self.button_close)
 
         self.widgets = []
         self.content = QtWidgets.QWidget()
@@ -155,17 +157,18 @@ class MyWindow(QtWidgets.QMainWindow):
         self.ui.chooiseMatch.setGeometry(QtCore.QRect(
             main_table_w * 0.78, 60, 130, 25))  # кнопка выбор матча
         self.ui.graphicsView.setGeometry(QtCore.QRect(
-            0, 120, main_table_w / 2, main_table_h * 0.72))  # поле для левого
+            0, 120, main_table_w / 2, main_table_h * 0.65))  # поле для левого
         # графика
         self.ui.graphWidget.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.72))  # левый график
+            0, 0, main_table_w / 2, main_table_h * 0.65))  # левый график
         self.ui.graphicsView2.setGeometry(QtCore.QRect(
-            main_table_w/2-10, 120, main_table_w / 2, main_table_h * 0.72))
+            main_table_w/2-10, 120, main_table_w / 2, main_table_h * 0.65))
         # поле правого графика
         self.ui.graphWidget2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.72))  # правый график
+            0, 0, main_table_w / 2, main_table_h * 0.65))  # правый график
         if main_table_w >= 1020:
             self._centralize_widgets(main_table_w, main_table_h)
+
 
     def _centralize_widgets(self, main_table_w, main_table_h):
         """
@@ -187,15 +190,15 @@ class MyWindow(QtWidgets.QMainWindow):
         self.ui.groupBox.setGeometry(QtCore.QRect(
             indent, main_table_h + 200, self.w * 0.97, 151))  # другие расчет
         self.ui.graphicsView.setGeometry(QtCore.QRect(
-            0, 120, main_table_w / 2, main_table_h * 0.72))  # поле для левого
+            0, 120, main_table_w / 2, main_table_h * 0.65))  # поле для левого
         # графика
         self.ui.graphWidget.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.72))  # левый график
+            0, 0, main_table_w / 2, main_table_h * 0.65))  # левый график
         self.ui.graphicsView2.setGeometry(QtCore.QRect(
-            main_table_w / 2 - 10, 120, main_table_w / 2, main_table_h * 0.72))
+            main_table_w / 2 - 10, 120, main_table_w / 2, main_table_h * 0.65))
         # поле правого графика
         self.ui.graphWidget2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.72))  # правый график
+            0, 0, main_table_w / 2, main_table_h * 0.65))  # правый график
 
 
 if __name__ == "__main__":
