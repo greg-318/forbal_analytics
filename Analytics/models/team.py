@@ -92,3 +92,12 @@ class Team(Structure):
         if not self.players:
             raise AttributeError("Team model haven't list of players")
         return super().dict()
+
+
+class MonteCarlo(Team):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.points = self.wins * 3 + self.draws
+        self.winpct = round(self.wins / (self.wins + self.draws + self.loses), 2)
+        self.drawpct = round(self.draws / (self.wins + self.draws + self.loses), 2)

@@ -1,5 +1,4 @@
 from types import MappingProxyType
-from datetime import datetime
 from pymongo import MongoClient
 
 
@@ -41,7 +40,6 @@ class MongoDefault:
             self.collection.name == "gameIndicators": "match"
         })[True]
         old_data = {uniq_key: value_uniq_key}
-        value_to["datetime"] = str(datetime.today().strftime("%Y-%m-%d"))
         new_data = {"$set": value_to}
         if one:
             result = self.collection.update_one(old_data, new_data, upsert=True)
