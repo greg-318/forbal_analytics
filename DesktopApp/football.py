@@ -12,7 +12,7 @@ class Ui_MainWindow(object):
         :param MainWindow: - окно приложения
         """
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setMinimumSize(800,700)
+        MainWindow.setMinimumSize(850,600)
         app_icon = QtGui.QIcon()
         app_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
         app_icon.addFile('icons/ball-24.png', QtCore.QSize(24, 24))
@@ -20,9 +20,18 @@ class Ui_MainWindow(object):
         MainWindow.setWindowIcon(app_icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.centralwidget.setGeometry(QtCore.QRect(10, 100, 1000, 1000))
+        self.centralwidget.setGeometry(QtCore.QRect(100, 100, 800, 1000))
+        self.main_layout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.main_layout.setGeometry(QtCore.QRect(0, 0, 800, 600))
+        self.scroll_area = QtWidgets.QScrollArea(self.centralwidget)
+        self.scroll_area.setObjectName('scroll_area')
+        self.scroll_area.setStyleSheet('#scroll_area{border:none}')
+        self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.main_layout.addWidget(self.scroll_area)
+        self.main_widget = QtWidgets.QWidget()
+        self.scroll_area.setWidget(self.main_widget)
 
-        self.contacts = QtWidgets.QWidget(self.centralwidget)
+        self.contacts = QtWidgets.QWidget(self.main_widget)
         self.contacts.setGeometry(QtCore.QRect(0, 5, 160, 50))
         self.vk = QtWidgets.QLineEdit(self.contacts)  # ссылка вк
         self.vk.setReadOnly(True)
@@ -42,12 +51,12 @@ class Ui_MainWindow(object):
         self.tg_icon.setGeometry(QtCore.QRect(10, 20, 20, 20))
 
         self.pixmap = QtGui.QPixmap("icons/image.png")
-        self.lbl = QtWidgets.QLabel(self.centralwidget)
+        self.lbl = QtWidgets.QLabel(self.main_widget)
         self.lbl.setPixmap(self.pixmap)
         self.lbl.setGeometry(QtCore.QRect(230, 10, 600, 60))
 
-        self.tableWidget_3 = QtWidgets.QTableWidget(self.centralwidget)
-        self.tableWidget_3.setGeometry(QtCore.QRect(10, 480, 800, 111))
+        self.tableWidget_3 = QtWidgets.QTableWidget(self.main_widget)
+        self.tableWidget_3.setGeometry(QtCore.QRect(10, 480, 780, 111))
         self.tableWidget_3.setMaximumSize(1020, 200)
         self.tableWidget_3.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
@@ -93,7 +102,7 @@ class Ui_MainWindow(object):
             self.tableWidget_3.setHorizontalHeaderItem(
                 tooltip_team.index(value), item)
 
-        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget = QtWidgets.QTabWidget(self.main_widget)
         self.tabWidget.setGeometry(QtCore.QRect(10, 50, 781, 411))
         self.tabWidget.setObjectName("tabWidget")
         self.tabWidget.setMaximumSize(1020, 537)
@@ -284,7 +293,7 @@ class Ui_MainWindow(object):
                                symbol="o", symbolSize=6, symbolBrush="w")
         self.tabWidget.addTab(self.tab_3, "")
 
-        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox = QtWidgets.QGroupBox(self.main_widget)
         self.groupBox.setGeometry(QtCore.QRect(10, 610, 781, 151))
         self.groupBox.setMaximumSize(1020, 151)
         self.groupBox.setObjectName("groupBox")
