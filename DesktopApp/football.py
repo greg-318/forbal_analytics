@@ -12,7 +12,7 @@ class Ui_MainWindow(object):
         :param MainWindow: - окно приложения
         """
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setMinimumSize(850,600)
+        MainWindow.setMinimumSize(850,620)
         app_icon = QtGui.QIcon()
         app_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
         app_icon.addFile('icons/ball-24.png', QtCore.QSize(24, 24))
@@ -22,7 +22,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.centralwidget.setGeometry(QtCore.QRect(100, 100, 800, 1000))
         self.main_layout = QtWidgets.QVBoxLayout(self.centralwidget)
-        self.main_layout.setGeometry(QtCore.QRect(0, 0, 800, 600))
+        self.main_layout.setGeometry(QtCore.QRect(0, 0, 800, 620))
         self.scroll_area = QtWidgets.QScrollArea(self.centralwidget)
         self.scroll_area.setObjectName('scroll_area')
         self.scroll_area.setStyleSheet('#scroll_area{border:none}')
@@ -232,8 +232,10 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.tableWidget.setFont(font)
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(10)
-        width_col_tableWidget = (100, 70, 70, 70, 70, 70, 70, 70, 80, 83)
+        self.tableWidget.setColumnCount(27)
+        width_col_tableWidget = (100, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+                                 25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+                                 25, 25, 25, 25, 25, 25, 25)
         tuple(self.tableWidget.setColumnWidth(index, value) for index, value in
               enumerate(width_col_tableWidget))
         self.tableWidget.setRowCount(2)
@@ -241,15 +243,19 @@ class Ui_MainWindow(object):
         self.tableWidget.setVerticalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(1, item)
-        tooltip_gameIndicators = ("Название команды",
+        tooltip_gameIndicators = ("Название команды", 'Показатели матча',
                                   "Средний % владения мячом", "Всего ударов",
                                   "Всего ударов в створ ворот",
-                                  "Количество ударов (текущий сезон)",
-                                  "Количество ударов в створ ворот (текущий "
-                                  "сезон)", "Всего ожидаемых голов",
-                                  "Всего ожидаемых голов (текущий сезон)",
-                                  "Процент ударов в створ ворот соперника",
-                                  "Процент ударов в створ ворот соперника")
+                                  'Всего ударов мимо ворот',
+                                  "Заблокированные удары",
+                                  "Угловые", "Офсайды", 'Фолы',
+                                  'Всего желтых карточек',
+                                  "Голевые моменты", "Упущено голевых моментов",
+                                  'Ударов в штангу', 'Удары из штрафной',
+                                  'Удары из-за штрафной', 'Отбито', 'Пасы',
+                                  'Точные пасы', 'Длинные мячи','Кроссы',
+                                  'Потеря владения','Дуэли', 'Воздушные дуэли',
+                                  'Отборы', 'Перехваты', 'Выносы')
         for index, value in enumerate(tooltip_gameIndicators):
             item = QtWidgets.QTableWidgetItem()
             item.setToolTip(value)
@@ -374,8 +380,11 @@ class Ui_MainWindow(object):
             item.setText(_translate("MainWindow", value))
         self.tabWidget.addTab(self.team_2, "Команда №2")
 
-        columns_gameIndicators = ("team", "chances", "g", "xg", "sh", "sht",
-                                  "deep", "ppda", "xpts", "bp")
+        columns_gameIndicators = ("team", 'rd', 'bp', 'total', 'in', 'out',
+                                  'bs', 'corn', 'off', 'foul', 'yc', 'bc',
+                                  'bcm', 'hw', 'sinb', 'sob', 'save', 'pass',
+                                  'apass', 'long', 'cross', 'plos', 'dw', 'aw',
+                                  'tack','int', 'cl')
         for index, value in enumerate(columns_gameIndicators):
             item = self.tableWidget.horizontalHeaderItem(index)
             item.setText(_translate("MainWindow", value))
