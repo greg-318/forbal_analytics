@@ -109,6 +109,8 @@ class MyWindow(QtWidgets.QMainWindow):
         super(MyWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setup_ui(self)
+        self.window_w = self.width()
+        self.main_w = self.ui.main_widget.width()
 
     def closeEvent(self, event):
         """
@@ -137,68 +139,8 @@ class MyWindow(QtWidgets.QMainWindow):
         :param event: - событие
         """
         self.w = self.size().width()
-        self.h = self.size().height()
-        self.ui.contacts.setGeometry(QtCore.QRect(0, 5, 160, 50))  # контакты
-        self.ui.tabWidget.setGeometry(QtCore.QRect(
-            10, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
-        main_table_w = self.ui.tabWidget.width()
-        main_table_h = self.ui.tabWidget.height()
-        self.ui.lbl.setGeometry(QtCore.QRect(230, 10, 600, 60))
-        self.ui.tableWidget_1.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 1
-        self.ui.tableWidget_2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 2
-        self.ui.tableWidget_3.setGeometry(QtCore.QRect(
-            10, main_table_h + 70, self.w * 0.97, 111))  # показатели команд
-        self.ui.groupBox.setGeometry(QtCore.QRect(
-            10, main_table_h + 200, self.w * 0.97, 151))  # другие расчеты
-        self.ui.pushButton_2.setGeometry(QtCore.QRect(
-            main_table_w * 0.78, 30, 130, 25))  # кнопка сменить тему
-        self.ui.chooiseMatch.setGeometry(QtCore.QRect(
-            main_table_w * 0.78, 60, 130, 25))  # кнопка выбор матча
-        self.ui.graphicsView.setGeometry(QtCore.QRect(
-            0, 120, main_table_w / 2, main_table_h * 0.65))  # поле для левого
-        # графика
-        self.ui.graphWidget.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.65))  # левый график
-        self.ui.graphicsView2.setGeometry(QtCore.QRect(
-            main_table_w/2-10, 120, main_table_w / 2, main_table_h * 0.65))
-        # поле правого графика
-        self.ui.graphWidget2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.65))  # правый график
-        if main_table_w >= 1020:
-            self._centralize_widgets(main_table_w, main_table_h)
-
-
-    def _centralize_widgets(self, main_table_w, main_table_h):
-        """
-        расположение всех виджетов по центру окна
-        :param main_table_w: - ширина главной таблицы
-        :param main_table_h: - высота главной таблицы
-        """
-        indent = (self.w - main_table_w) / 2
-        self.ui.contacts.setGeometry(QtCore.QRect(indent, 5, 160, 50))
-        self.ui.lbl.setGeometry(QtCore.QRect(indent + 230, 10, 600, 60))  # заголовок
-        self.ui.tabWidget.setGeometry(QtCore.QRect(
-            indent, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
-        self.ui.tableWidget_1.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 1
-        self.ui.tableWidget_2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 2
-        self.ui.tableWidget_3.setGeometry(QtCore.QRect(
-            indent, main_table_h + 70, self.w * 0.97, 111))  # показатели
-        self.ui.groupBox.setGeometry(QtCore.QRect(
-            indent, main_table_h + 200, self.w * 0.97, 151))  # другие расчет
-        self.ui.graphicsView.setGeometry(QtCore.QRect(
-            0, 120, main_table_w / 2, main_table_h * 0.65))  # поле для левого
-        # графика
-        self.ui.graphWidget.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.65))  # левый график
-        self.ui.graphicsView2.setGeometry(QtCore.QRect(
-            main_table_w / 2 - 10, 120, main_table_w / 2, main_table_h * 0.65))
-        # поле правого графика
-        self.ui.graphWidget2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.65))  # правый график
+        self.ui.main_widget.setGeometry(
+            QtCore.QRect((self.w - 850)/2, 0, 800, 800))
 
 
 if __name__ == "__main__":
