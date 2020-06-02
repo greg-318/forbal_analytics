@@ -3,18 +3,20 @@ import re
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5 import QtCore
 from pymongo import MongoClient
-sys.path.extend([r"D:\Мои документы\Desktop\R&D\Analytics",
-                 r"D:\Мои документы\Desktop\R&D\Analytics\models"])
-from predict_indicators import number_of_goals_probabilities, \
+import pathlib
+
+path = '\\'.join(str(pathlib.Path().absolute()).split(r'\\')[:-1])
+sys.path.append(path)
+
+from Analytics.predict_indicators import number_of_goals_probabilities, \
     match_result_probabilities
-from player import Player
-from team import Team
-from game_indicators import GameIndicators, TeamIndicators
+from Analytics.models.team import Team, Player
+from Analytics.models.game_indicators import GameIndicators, TeamIndicators
 
 
 class SetContent:
     def __init__(self, match_info, ui):
-        self.client = MongoClient("mongodb://34.91.248.129:27017/")
+        self.client = MongoClient("mongodb://localhost:27017/")
         self.db_conn = self.client["football"]
         self.match = match_info
         self.ui = ui
@@ -25,14 +27,6 @@ class SetContent:
                       for x in [self.match["team1"]["name"],
                                 self.match["team2"]["name"]]]
 
-        self.col_conn = self.db_conn["players"]
-        players1 = [next(self.col_conn.find({"player": x}, {"_id": 0,
-                                                            "datetime": 0}))
-                    for x in self.match["team1"]["players"]]
-        players2 = [next(self.col_conn.find({"player": x}, {"_id": 0,
-                                                            "datetime": 0}))
-                    for x in self.match["team2"]["players"]]
-
         self.teams[0]["name"] = self.teams[0]["name"].replace("_", " ")
         self.teams[1]["name"] = self.teams[1]["name"].replace("_", " ")
         self.match["team1"]["name"] = self.match["team1"]["name"].replace("_",
@@ -40,12 +34,12 @@ class SetContent:
         self.match["team2"]["name"] = self.match["team2"]["name"].replace("_",
                                                                           " ")
 
-        self.home = [self.match["team1"]["xg"] for _ in range(
-            self.match["team1"]["sh"])]
-        self.away = [self.match["team2"]["xg"] for _ in range(
-            self.match["team2"]["sh"])]
-        self.setTeam(players1, self.ui.tableWidget_1)
-        self.setTeam(players2, self.ui.tableWidget_2)
+        self.home = [self.match["team1"]["xg"] / self.match["team1"]["sh"]
+                     for _ in range(self.match["team1"]["sh"])]
+        self.away = [self.match["team2"]["xg"] / self.match["team2"]["sh"]
+                     for _ in range(self.match["team2"]["sh"])]
+        # self.setTeam(players1, self.ui.tableWidget_1)
+        # self.setTeam(players2, self.ui.tableWidget_2)
         self.setMatch([self.match["team1"], self.match["team2"]],
                       TeamIndicators, self.ui.tableWidget)
         self.setMatch(self.teams, Team, self.ui.tableWidget_3)
@@ -99,7 +93,8 @@ class SetContent:
         flag = flag[:10]
         g = self.ui.graphWidget
         g.clear()
-        g.plot(self.ui.probabilities, flag, pen=self.ui.blue, symbol="o",
+        self.ui.graphWidget.setTitle(self.match['team1']['name'])
+        g.plot(self.ui.probabilities, flag, pen=self.ui.red, symbol="o",
                symbolSize=6, symbolBrush="w")
 
         flag2 = number_of_goals_probabilities(self.away)
@@ -109,5 +104,6 @@ class SetContent:
         flag2 = flag2[:10]
         g2 = self.ui.graphWidget2
         g2.clear()
-        g2.plot(self.ui.probabilities, flag2, pen=self.ui.red, symbol="o",
+        self.ui.graphWidget2.setTitle(self.match['team2']['name'])
+        g2.plot(self.ui.probabilities, flag2, pen=self.ui.blue, symbol="o",
                 symbolSize=6, symbolBrush="w")
