@@ -72,8 +72,14 @@ def match_result_probabilities(p_shots_home: list, p_shots_away: list) -> list:
             else:
                 p_draw += p
 
-    p_home_win = int(p_home_win) // 100
-    p_away_win = int(p_away_win) // 100
-    p_draw = int(p_draw) // 100
+    p_home_win = int(p_home_win / 100 + .5)
+    p_away_win = int(p_away_win / 100 + .5)
+    p_draw = int(p_draw / 100 + .5)
+
+    if sum([p_home_win, p_away_win, p_draw]) != 100:
+        p_draw += 1
+
+
+
 
     return np.round([p_home_win, p_draw, p_away_win], 4).tolist()
