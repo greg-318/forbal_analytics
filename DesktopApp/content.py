@@ -38,8 +38,8 @@ class SetContent:
                      for _ in range(self.match["team1"]["sh"])]
         self.away = [self.match["team2"]["xg"] / self.match["team2"]["sh"]
                      for _ in range(self.match["team2"]["sh"])]
-        # self.setTeam(players1, self.ui.tableWidget_1)
-        # self.setTeam(players2, self.ui.tableWidget_2)
+        self.setTeam(self.teams[0]["players"], self.ui.tableWidget_1)
+        self.setTeam(self.teams[1]["players"], self.ui.tableWidget_2)
         self.setMatch([self.match["team1"], self.match["team2"]],
                       TeamIndicators, self.ui.tableWidget)
         self.setMatch(self.teams, Team, self.ui.tableWidget_3)
