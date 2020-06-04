@@ -109,8 +109,6 @@ class MyWindow(QtWidgets.QMainWindow):
         super(MyWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setup_ui(self)
-        self.window_w = self.width()
-        self.main_w = self.ui.main_widget.width()
 
     def closeEvent(self, event):
         """
@@ -138,9 +136,10 @@ class MyWindow(QtWidgets.QMainWindow):
         перехват события изменения размера окна, изменение размеров элементов
         :param event: - событие
         """
-        self.w = self.size().width()
-        self.ui.main_widget.setGeometry(
-            QtCore.QRect((self.w - 850)/2, 0, 800, 800))
+        width = self.size().width()
+        height = self.size().height()
+        self.ui.scroll_area.setGeometry(
+            QtCore.QRect((width - 850) / 2 + 15, 0, 820, height))
 
 
 if __name__ == "__main__":

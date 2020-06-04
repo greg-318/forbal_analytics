@@ -12,7 +12,7 @@ class Ui_MainWindow(object):
         :param MainWindow: - окно приложения
         """
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setMinimumSize(850,620)
+        MainWindow.setMinimumSize(830,620)
         app_icon = QtGui.QIcon()
         app_icon.addFile('icons/ball-16.png', QtCore.QSize(16, 16))
         app_icon.addFile('icons/ball-24.png', QtCore.QSize(24, 24))
@@ -21,14 +21,15 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.centralwidget.setGeometry(QtCore.QRect(100, 100, 800, 1000))
-        self.main_layout = QtWidgets.QVBoxLayout(self.centralwidget)
-        self.main_layout.setGeometry(QtCore.QRect(0, 0, 800, 620))
         self.scroll_area = QtWidgets.QScrollArea(self.centralwidget)
         self.scroll_area.setObjectName('scroll_area')
         self.scroll_area.setStyleSheet('#scroll_area{border:none}')
-        self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.main_layout.addWidget(self.scroll_area)
+        self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.scroll_area.setGeometry(QtCore.QRect(15, 0, 820, 620))
+        self.scroll_area.setMaximumHeight(810)
         self.main_widget = QtWidgets.QWidget()
+        self.main_widget.setGeometry(QtCore.QRect(0, 0, 800, 800))
+        self.main_widget.setStyleSheet('{background-color:green}')
         self.scroll_area.setWidget(self.main_widget)
 
         self.contacts = QtWidgets.QWidget(self.main_widget)
