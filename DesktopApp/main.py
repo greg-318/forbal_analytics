@@ -76,7 +76,7 @@ class ScrollMatches(QtWidgets.QMessageBox):
 
 def choose_matches_clicked():
 
-    client = MongoClient("mongodb://34.91.248.129:27017/")
+    client = MongoClient("mongodb://localhost:27017/")
     db_conn = client["football"]
     col_conn = db_conn["gameIndicators"]
     matches = [x for x in col_conn.find({}, {"_id": 0})]

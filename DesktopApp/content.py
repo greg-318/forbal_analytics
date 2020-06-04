@@ -14,7 +14,7 @@ from game_indicators import GameIndicators, TeamIndicators
 
 class SetContent:
     def __init__(self, match_info, ui):
-        self.client = MongoClient("mongodb://34.91.248.129:27017/")
+        self.client = MongoClient("mongodb://localhost:27017/")
         self.db_conn = self.client["football"]
         self.match = match_info
         self.ui = ui
