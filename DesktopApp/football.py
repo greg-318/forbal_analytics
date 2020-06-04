@@ -29,7 +29,6 @@ class Ui_MainWindow(object):
         self.scroll_area.setMaximumHeight(810)
         self.main_widget = QtWidgets.QWidget()
         self.main_widget.setGeometry(QtCore.QRect(0, 0, 800, 800))
-        self.main_widget.setStyleSheet('{background-color:green}')
         self.scroll_area.setWidget(self.main_widget)
 
         self.contacts = QtWidgets.QWidget(self.main_widget)
