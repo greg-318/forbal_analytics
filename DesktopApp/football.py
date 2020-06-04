@@ -66,10 +66,9 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.tableWidget_3.setFont(font)
         self.tableWidget_3.setObjectName("tableWidget_3")
-        self.tableWidget_3.setColumnCount(23)
-        width_col_tableWidget_3 = (100, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-                                   20, 20, 20, 20, 20, 50, 50, 50, 50, 20, 20,
-                                   20)
+        self.tableWidget_3.setColumnCount(18)
+        width_col_tableWidget_3 = (100, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+                                   50, 50, 50, 50, 50, 50, 50, 50)
         tuple(self.tableWidget_3.setColumnWidth(index, value) for index, value
               in enumerate(width_col_tableWidget_3))
         self.tableWidget_3.setRowCount(2)
@@ -79,11 +78,7 @@ class Ui_MainWindow(object):
 
         tooltip_team = ("Название команды", "Количество сыгранных матчей",
                         "Победы", "Ничьи", "Поражения", "Забитых голов",
-                        "Пропущенных голов", "Разница в голах", "Очки",
-                        "Очков за игру (в среднем за сезон)",
-                        "Очков в среднем за игру в последних 8 матчей",
-                        "% матчей без пропущенных голов",
-                        "% матчей без забитых голов", "Ожидаемых забитых голов",
+                        "Пропущенных голов",  "Очки", "Ожидаемых забитых голов",
                         "Ожидаемых забитых голов без учета пенальти",
                         "Ожидаемых пропущенных голов",
                         "Ожидаемых пропущенных голов без учета пенальти",
@@ -249,12 +244,12 @@ class Ui_MainWindow(object):
                                   "Всего ударов в створ ворот",
                                   'Всего ударов мимо ворот',
                                   "Заблокированные удары",
-                                  "Угловые", "Офсайды", 'Фолы',
+                                  "Угловые", "Вне игры", 'Фолы',
                                   'Всего желтых карточек',
                                   "Голевые моменты", "Упущено голевых моментов",
                                   'Ударов в штангу', 'Удары из штрафной',
                                   'Удары из-за штрафной', 'Сейвы вратаря',
-                                  'Пасы всего',
+                                  'Всего пасы',
                                   'Точные пасы', 'Дальние передачи',
                                   'Передачи в штрафную площадь',
                                   'Потеря мяча','Победы в единоборствах',
@@ -365,8 +360,8 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Сменить тему"))
         self.chooiseMatch.setText(_translate("MainWindow", "Выбор матча"))
 
-        columns_team = ("team", "gp", "w", "d", "l", "gf", "ga", "gd", "pts",
-                        "ppg", "last8", "cs", "fts", "xg", "npxg", "xga",
+        columns_team = ("team", "gp", "w", "d", "l", "sc", "ms",  "pts",
+                         "xg", "npxg", "xga",
                         "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts")
         for index, value in enumerate(columns_team):
             item = self.tableWidget_3.horizontalHeaderItem(index)

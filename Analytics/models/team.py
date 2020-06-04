@@ -58,7 +58,6 @@ class Team(Structure):
     :param loses: Loses
     :param scored: Goals for
     :param missed: Goals againist
-    :param gd: Goal difference
     :param pts: Points
     # :param ppg: Points per game
     # :param last8: Points per game in the last 8 matches
