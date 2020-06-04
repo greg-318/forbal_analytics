@@ -65,9 +65,9 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.tableWidget_3.setFont(font)
         self.tableWidget_3.setObjectName("tableWidget_3")
-        self.tableWidget_3.setColumnCount(18)
+        self.tableWidget_3.setColumnCount(19)
         width_col_tableWidget_3 = (100, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-                                   50, 50, 50, 50, 50, 50, 50, 50)
+                                   50, 50, 50, 50, 50, 50, 50, 50, 50)
         tuple(self.tableWidget_3.setColumnWidth(index, value) for index, value
               in enumerate(width_col_tableWidget_3))
         self.tableWidget_3.setRowCount(2)
@@ -77,7 +77,8 @@ class Ui_MainWindow(object):
 
         tooltip_team = ("Название команды", "Количество сыгранных матчей",
                         "Победы", "Ничьи", "Поражения", "Забитых голов",
-                        "Пропущенных голов",  "Очки", "Ожидаемых забитых голов",
+                        "Пропущенных голов", 'Разница в голах', "Очки",
+                        "Ожидаемых забитых голов",
                         "Ожидаемых забитых голов без учета пенальти",
                         "Ожидаемых пропущенных голов",
                         "Ожидаемых пропущенных голов без учета пенальти",
@@ -359,7 +360,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Сменить тему"))
         self.chooiseMatch.setText(_translate("MainWindow", "Выбор матча"))
 
-        columns_team = ("team", "gp", "w", "d", "l", "sc", "ms",  "pts",
+        columns_team = ("team", "gp", "w", "d", "l", "sc", "ms", 'gd', "pts",
                          "xg", "npxg", "xga",
                         "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts")
         for index, value in enumerate(columns_team):
