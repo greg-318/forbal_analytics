@@ -229,9 +229,9 @@ class Ui_MainWindow(object):
         self.tableWidget.setFont(font)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(27)
-        width_col_tableWidget = (100, 25, 25, 25, 25, 25, 25, 25, 25, 25,
-                                 25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
-                                 25, 25, 25, 25, 25, 25, 25)
+        width_col_tableWidget = (100, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+                                 55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+                                 55, 55, 55, 55, 55, 55, 55)
         tuple(self.tableWidget.setColumnWidth(index, value) for index, value in
               enumerate(width_col_tableWidget))
         self.tableWidget.setRowCount(2)
@@ -360,8 +360,8 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Сменить тему"))
         self.chooiseMatch.setText(_translate("MainWindow", "Выбор матча"))
 
-        columns_team = ("team", "gp", "w", "d", "l", "sc", "ms", 'gd', "pts",
-                         "xg", "npxg", "xga",
+        columns_team = ("team", "games", "wins", "draws", "loses", "goals",
+                        "missed", 'gd', "pts", "xg", "npxg", "xga",
                         "npxga", "npxgd", "ppda", "oppda", "dc", "odc", "xpts")
         for index, value in enumerate(columns_team):
             item = self.tableWidget_3.horizontalHeaderItem(index)
@@ -382,11 +382,14 @@ class Ui_MainWindow(object):
             item.setText(_translate("MainWindow", value))
         self.tabWidget.addTab(self.team_2, "Команда №2")
 
-        columns_gameIndicators = ("team", 'rd', 'bp', 'total', 'in', 'out',
-                                  'bs', 'corn', 'off', 'foul', 'yc', 'bc',
-                                  'bcm', 'hw', 'sinb', 'sob', 'save', 'pass',
-                                  'apass', 'long', 'cross', 'plos', 'dw', 'aw',
-                                  'tack','int', 'cl')
+        columns_gameIndicators = ("team", 'period', 'bp', 'shots', 'on_targ',
+                                  'off_targ','blocks', 'corner', 'offside',
+                                  'foul', 'yellow', 'chance',
+                                  'sh_miss', 'hit_w', 'sh_in', 'sh_off',
+                                  'saves', 'pass',
+                                  'apass', 'long', 'cross', 'loss_bp',
+                                  'duels', 'air_w',
+                                  'tack', 'interc', 'cl')
         for index, value in enumerate(columns_gameIndicators):
             item = self.tableWidget.horizontalHeaderItem(index)
             item.setText(_translate("MainWindow", value))
