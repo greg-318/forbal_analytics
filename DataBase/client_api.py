@@ -12,4 +12,4 @@ def get_api_data(data: dict):
     ws.send(json.dumps(data))
     result = ws.recv()
     ws.close()
-    return result
+    return json.loads(result)
