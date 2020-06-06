@@ -3,8 +3,9 @@ import logging
 import sys
 import aiohttp
 from understat import Understat
-sys.path.extend(["../Analytics/models/", "../DataBase/"])
+sys.path.extend(["../Analytics/models/", "../DataBase/", "../Analytics/"])
 import team as team_model
+from standard import check_standard_teams
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 
@@ -72,6 +73,8 @@ if __name__ == "__main__":
 
             for data in all_players_league:
                 model = team_model.Team(**data)
+                split_name = model.name.split("_")
+                model.name = split_name[0]+"_"+check_standard_teams(league, split_name[1])
                 model.sendToMongo()
 
         logging.info(f"Finished parsing data for league: {league}...")
