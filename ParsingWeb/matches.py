@@ -4,6 +4,8 @@ import sys
 import logging
 sys.path.extend(["../Analytics/models/", "../DataBase/", "../Analytics/"])
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 from bs4 import BeautifulSoup
 import game_indicators as model
 from standard import check_standard_teams
@@ -35,73 +37,88 @@ def periods_dict(all, first, second):
     return periods
 
 
+def get_data(match_id, proxy):
+    url_statistics = json_statistics.replace("ID", str(object_match["id"]))
+    url_incidents = json_incidents.replace("ID", str(object_match["id"]))
+    url_players = json_players.replace("ID", str(object_match["id"]))
+    try:
+        get_statistics = requests.get(url_statistics, proxies=proxy, verify=False, timeout=30).json()
+        get_incidents = requests.get(url_incidents, proxies=proxy, verify=False, timeout=30).json()
+        get_players = requests.get(url_players, proxies=proxy, verify=False, timeout=30).json()
+        return get_statistics, get_incidents, get_players
+    except:
+        logging.info(f"Error in during getting urls - {proxy}. Reload with new proxy")
+        return get_data(match_id, next(proxies))
+
+
+def get_seasons(link, proxy):
+    try:
+        response = requests.get(link, proxies=proxy, verify=False).content
+        soup = BeautifulSoup(response, 'html.parser')
+        script = soup.find('script', id='__NEXT_DATA__')
+        obj = json.loads(script.contents[0])
+        return obj['props']['initialProps']['pageProps']['seasons']
+    except:
+        return get_seasons(link, next(proxies))
+
+
+def get_matches(url, proxy):
+    try:
+        return requests.get(matches, proxies=proxy, verify=False, timeout=30).json()
+    except:
+        return get_matches(url, next(proxies))
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
-    leagues = {"RFPL": "russia/premier-liga/203", "EPL": "england/premier-league/17", "La_liga": "spain/laliga/8",
-               "Bundesliga": "germany/bundesliga/35", "Serie_A": "italy/serie-a/23", "Ligue_1": "france/ligue-1/34"}
+    leagues = {"RFPL": "russia/premier-liga/203"}
+    # "EPL": "england/premier-league/17", "La_liga": "spain/laliga/8",
+    #                "Bundesliga": "germany/bundesliga/35", "Serie_A": "italy/serie-a/23", "Ligue_1": "france/ligue-1/34"
     link = "https://www.sofascore.com/tournament/football/"
     proxies = proxy_gen()
 
     for league_key, league in leagues.items():
         logging.info(f'Starting {league_key}...')
-        r = requests.get(link+league, proxies=next(proxies), verify=False).content
-        soup = BeautifulSoup(r, 'html.parser')
-        script = soup.find('script', id='__NEXT_DATA__')
-        obj = json.loads(script.contents[0])
-        seasons_ids = obj['props']['initialProps']['pageProps']['seasons']
+        seasons_ids = get_seasons(link+league, next(proxies))
 
         for season in seasons_ids:
             year = '20'+season['year'].split("/")[1]
+            if int(year) < 2014:
+                break
             logging.info(f'Season year - {year}')
             matches = json_matches.replace("LEAGUE", str(league.split("/")[-1])).replace("ID", str(season["id"]))
-            try:
-                response = requests.get(matches, proxies=next(proxies), verify=False, timeout=30).json()
-            except:
-                logging.warning(f'Response error {matches}')
-                with open('error_parsing_main_url.txt', 'a') as f:
-                    f.write(f'{season["id"]}\n\n')
-            else:
-                for values in response['teamEvents'].values():
-                    for ids in values.values():
-                        for object_match in ids['total']:
+            response = get_matches(matches, next(proxies))
+            for values in response['teamEvents'].values():
+                for ids in values.values():
+                    for object_match in ids['total']:
+                        data_statistics, data_incidents, data_players = get_data(object_match["id"], next(proxies))
 
-                            url_statistics = json_statistics.replace("ID", str(object_match["id"]))
-                            url_incidents = json_incidents.replace("ID", str(object_match["id"]))
-                            url_players = json_players.replace("ID", str(object_match["id"]))
+                        try:
+                            home_team = check_standard_teams(league_key, object_match['homeTeam']['name'])
+                            away_team = check_standard_teams(league_key, object_match['awayTeam']['name'])
+                        except:
+                            logging.warning(f'Error name team')
+                            with open('error_parsing_name.txt', 'a') as f:
+                                f.write(f'{data_statistics}\n{data_incidents}\n{data_players}\n{home_team}-{away_team}\n\n')
+                            continue
 
-                            try:
-                                get_statistics = requests.get(url_statistics, proxies=next(proxies), verify=False, timeout=30).json()
-                                get_incidents = requests.get(url_incidents, proxies=next(proxies), verify=False, timeout=30).json()
-                                get_players = requests.get(url_players, proxies=next(proxies), verify=False, timeout=30).json()
-                            except:
-                                logging.warning(f'Response error getting data')
-                                with open('error_parsing_url.txt', 'a') as f:
-                                    f.write(f'{object_match["id"]}\n\n')
-                                break
+                        home_result = data_incidents['incidents'][0]['homeScore']
+                        away_result = data_incidents['incidents'][0]['awayScore']
+                        try:
+                            home_players = {player['player']['name']: player['statistics'] for player in data_players['home']['players'] if not player['substitute']}
+                            away_players = {player['player']['name']: player['statistics'] for player in data_players['away']['players'] if not player['substitute']}
+                        except:
+                            continue
 
-                            try:
-                                home_team = check_standard_teams(league_key, object_match['homeTeam']['name'])
-                                away_team = check_standard_teams(league_key, object_match['awayTeam']['name'])
-                            except:
-                                logging.warning(f'Error name team')
-                                with open('error_parsing_name.txt', 'a') as f:
-                                    f.write(f'{url_statistics}\n{url_incidents}\n{url_players}\n\n')
-                                break
+                        period_all = sum([item['statisticsItems'] for item in data_statistics['statistics'][0]['groups']], [])
+                        period_first = sum([item['statisticsItems'] for item in data_statistics['statistics'][1]['groups']], [])
+                        period_second = sum([item['statisticsItems'] for item in data_statistics['statistics'][2]['groups']], [])
 
-                            home_result = get_incidents['incidents'][0]['homeScore']
-                            away_result = get_incidents['incidents'][0]['awayScore']
-                            home_players = {player['player']['name']: player['statistics'] for player in get_players['home']['players'] if not player['substitute']}
-                            away_players = {player['player']['name']: player['statistics'] for player in get_players['away']['players'] if not player['substitute']}
+                        periods = periods_dict(period_all, period_first, period_second)
 
-                            period_all = sum([item['statisticsItems'] for item in get_statistics['statistics'][0]['groups']], [])
-                            period_first = sum([item['statisticsItems'] for item in get_statistics['statistics'][1]['groups']], [])
-                            period_second = sum([item['statisticsItems'] for item in get_statistics['statistics'][2]['groups']], [])
-
-                            periods = periods_dict(period_all, period_first, period_second)
-
-                            m = model.GameIndicators(**periods)
-                            m.match = year+'_'+home_team+'_'+str(home_result)+str(away_result)+"_"+away_team
-                            m.players_home = {home_team: home_players}
-                            m.players_away = {away_team: away_players}
-                            m.sendToMongo()
-                            logging.info(f'Success wrote to Mongo')
+                        m = model.GameIndicators(**periods)
+                        m.match = year+'_'+home_team+'_'+str(home_result)+str(away_result)+"_"+away_team
+                        m.players_home = {home_team: home_players}
+                        m.players_away = {away_team: away_players}
+                        m.sendToMongo()
+                        logging.info(f'Success wrote to Mongo')
