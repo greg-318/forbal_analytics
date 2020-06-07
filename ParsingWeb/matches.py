@@ -71,9 +71,8 @@ def get_matches(url, proxy):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
-    leagues = {"RFPL": "russia/premier-liga/203"}
-    # "EPL": "england/premier-league/17", "La_liga": "spain/laliga/8",
-    #                "Bundesliga": "germany/bundesliga/35", "Serie_A": "italy/serie-a/23", "Ligue_1": "france/ligue-1/34"
+    leagues = {"RFPL": "russia/premier-liga/203", "EPL": "england/premier-league/17", "La_liga": "spain/laliga/8",
+               "Bundesliga": "germany/bundesliga/35", "Serie_A": "italy/serie-a/23", "Ligue_1": "france/ligue-1/34"}
     link = "https://www.sofascore.com/tournament/football/"
     proxies = proxy_gen()
 
