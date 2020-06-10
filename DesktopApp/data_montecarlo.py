@@ -13,5 +13,5 @@ class Games:
         if not isinstance(num, int) or num > self.count:
             raise ValueError("Неверное значение")
         self._games_num = num
-        self.list_games = tuple(range(self.count-self._games_num+1))
-        self.max_points = tuple(range(max(self.list_games) * 3+1))
+        self.list_games = self.count-self._games_num
+        self.max_points = self.list_games * 3

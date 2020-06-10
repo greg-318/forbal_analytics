@@ -60,7 +60,7 @@ dict_associations = {
             "Darmstadt": ["Darmstadt", "Darmstadt 98"],
             "Ingolstadt": ["Ingolstadt"]}},
     "La Liga": {
-        "name": ["LaLiga", "La liga"],
+        "name": ["LaLiga", "La liga", "La_liga"],
         "teams": {
             "Alaves": ["Alavés", "Deportivo Alavés"],
             "Athletic Bilbao": ["Athletic", "Athletic Club", "Ath Bilbao"],
@@ -93,7 +93,7 @@ dict_associations = {
             "Cordoba": ["Córdoba"],
             "Elche": ["Elche", "Elche CF"]}},
     "Serie A": {
-        "name": ["Italy - Serie A"],
+        "name": ["Italy - Serie A", "Serie_A"],
         "teams": {
             "AC Milan": ["Milan"],
             "AS Roma": ["Roma"],
@@ -110,6 +110,8 @@ dict_associations = {
             "Lecce": ["Lecce"],
             "Napoli": ["Napoli"],
             "Parma": ["Parma Calcio 1913"],
+            "Palermo": ["Palermo"],
+            "Cesena": ["Cesena"],
             "Sampdoria": ["Sampdoria"],
             "Sassuolo": ["Sassuolo"],
             "SPAL": ["SPAL 2013"],
@@ -122,7 +124,7 @@ dict_associations = {
             "Crotone": ["Crotone"],
             "Pescara": ["Pescara"],
             "Carpi": ["Carpi"]}},
-    "PFPL": {
+    "RFPL": {
         "name": ["Russia - Premier League", "Premier Liga", "Premier League"],
         "teams": {
             "Akhmat Grozny": ["Akhmat", "FK Akhmat", "Terek Grozny"],
@@ -151,7 +153,7 @@ dict_associations = {
             "Saransk": ["Mordovia", "Mordovya", "Mordovia Saransk"],
             "Torpedo Moscow": ["Torpedo"]}},
     "Ligue 1": {
-        "name": ["France - Ligue 1"],
+        "name": ["France - Ligue 1", "Ligue_1"],
         "teams": {
             "Amiens": ["Amiens"],
             "Angers": ["Angers"],
