@@ -60,7 +60,7 @@ def get_seasons(link, proxy):
 
 def get_matches(url, proxy):
     try:
-        result = requests.get(matches, proxies=proxy, verify=False, timeout=30)
+        result = requests.get(url, proxies=proxy, verify=False, timeout=30)
         if result.status_code != 200:
             return
         return result.json()
@@ -83,7 +83,7 @@ if __name__ == "__main__":
             if int(year) < 2014:
                 break
             logging.info(f'Season year - {year}')
-            for i in itertools.count(start=31, step=1):
+            for i in itertools.count(start=1, step=1):
                 matches = json_matches.replace("LEAGUE_ID", str(league.split("/")[-1])).replace(
                     "SEASON_ID", str(season["id"])).replace("NUM", str(i))
                 response = get_matches(matches, next(proxies))
