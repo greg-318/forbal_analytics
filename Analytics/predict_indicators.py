@@ -1,5 +1,5 @@
-import numpy as np
 import itertools
+import numpy as np
 
 __doc__ = "Теорема Бернулли. Работаем с функцией match_result_probabilities"
 
