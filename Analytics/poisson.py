@@ -56,49 +56,47 @@ def calculate_attack_defender(total_home_goals: int, total_away_goals: int, tota
     command_B = ((scipy.stats.distributions.poisson.pmf([0, 1, 2, 3, 4, 5, 6], AT_attack_strength)) * 100)
     p_goals_B = [round(np.float(x), 1) for x in command_B]
 
-    prob = [p_goals_A, p_goals_B]
-    return prob
+    return [p_goals_A, p_goals_B]
 
 
 def probability_score(prob: list) -> dict:
     """Расчитываем матрицу всех возможных результатов между двумя командами в пределах 5 мячей
-
-    :param prob: список вероятностей для двух команд
-    :return: словарь с процентами по каждому возможному результату матча
+        :param prob: список вероятностей для двух команд
+        :return: словарь с процентами по каждому возможному результату матча
     """
 
     # Все вероятности победы П1 всухую: 1-0, 2-0, 3-0, 4-0, 5-0
-    home_win_10 = [round((prob[0][x] * prob[1][0]) / 100, 1) for x in range(1, 6)]
+    home_win_10 = tuple(round((prob[0][x] * prob[1][0]) / 100, 1) for x in range(1, 6))
 
     # Все вероятности победы П1 и пропущенном 1 мяче: 2-1, 3-1, 4-1, 5-1
-    home_win_21 = [round((prob[0][x] * prob[1][1]) / 100, 1) for x in range(2, 6)]
+    home_win_21 = tuple(round((prob[0][x] * prob[1][1]) / 100, 1) for x in range(2, 6))
 
     # Все вероятности победы П1 и пропущенных 2 мячах: 3-2, 4-2, 5-2
-    home_win_32 = [round((prob[0][x] * prob[1][2]) / 100, 1) for x in range(3, 6)]
+    home_win_32 = tuple(round((prob[0][x] * prob[1][2]) / 100, 1) for x in range(3, 6))
 
     # Все вероятности победы П1 и пропущенных 3 мячах: 4-3, 5-3
-    home_win_43 = [round((prob[0][x] * prob[1][3]) / 100, 1) for x in range(4, 6)]
+    home_win_43 = tuple(round((prob[0][x] * prob[1][3]) / 100, 1) for x in range(4, 6))
 
     # Все вероятности победы П1 и пропущенных 4 мячах: 5-4
-    home_win_54 = [round((prob[0][x] * prob[1][4]) / 100, 1) for x in range(5, 6)]
+    home_win_54 = tuple(round((prob[0][x] * prob[1][4]) / 100, 1) for x in range(5, 6))
 
     # Все вероятности ничьи: 0-0, 1-1, 2-2, 3-3, 4-4, 5-5
-    draw = [round((prob[0][x] * prob[1][x]) / 100, 1) for x in range(0, 6)]
+    draw = tuple(round((prob[0][x] * prob[1][x]) / 100, 1) for x in range(0, 6))
 
     # Все вероятности победы П2 всухую: 0-1, 0-2, 0-3, 0-4, 0-5
-    away_win_01 = [round((prob[0][0] * prob[1][x]) / 100, 1) for x in range(1, 6)]
+    away_win_01 = tuple(round((prob[0][0] * prob[1][x]) / 100, 1) for x in range(1, 6))
 
     # Все вероятности победы П2 и пропущенном 1 мяче: 1-2, 1-3, 1-4, 1-5
-    away_win_12 = [round((prob[0][1] * prob[1][x]) / 100, 1) for x in range(2, 6)]
+    away_win_12 = tuple(round((prob[0][1] * prob[1][x]) / 100, 1) for x in range(2, 6))
 
     # Все вероятности победы П2 и пропущенных 2 мячах: 2-3, 2-4, 2-5
-    away_win_23 = [round((prob[0][2] * prob[1][x]) / 100, 1) for x in range(3, 6)]
+    away_win_23 = tuple(round((prob[0][2] * prob[1][x]) / 100, 1) for x in range(3, 6))
 
     # Все вероятности победы П2 и пропущенных 3 мячах: 3-4, 3-5
-    away_win_34 = [round((prob[0][3] * prob[1][x]) / 100, 1) for x in range(4, 6)]
+    away_win_34 = tuple(round((prob[0][3] * prob[1][x]) / 100, 1) for x in range(4, 6))
 
     # Все вероятности победы П2 и пропущенных 4 мячах: 4-5
-    away_win_45 = [round((prob[0][4] * prob[1][x]) / 100, 1) for x in range(5, 6)]
+    away_win_45 = tuple(round((prob[0][4] * prob[1][x]) / 100, 1) for x in range(5, 6))
 
     return {'home_win_10': home_win_10, 'home_win_21': home_win_21, 'home_win_32': home_win_32,
             'home_win_43': home_win_43,
