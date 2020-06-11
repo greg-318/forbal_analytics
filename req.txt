@@ -9,3 +9,4 @@ shiboken2==5.14.2
 selenium==3.141.0
 bs4==4.8.2
 requests==2.7.0
+websocket-client-0.57.0

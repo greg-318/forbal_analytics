@@ -8,9 +8,7 @@ from football import Ui_MainWindow
 
 
 class CreateChooseWidget(QtWidgets.QWidget):
-    """
-    пункт в виджете выбора матча
-    """
+
     def __init__(self, match):
         super(CreateChooseWidget, self).__init__()
         self.match_info = match
@@ -23,14 +21,14 @@ class CreateChooseWidget(QtWidgets.QWidget):
 
 
 class ScrollMatches(QtWidgets.QMessageBox):
-    """
-    виджет с выбором матча
-    """
+
     def __init__(self, all_matches, *args, **kwargs):
         QtWidgets.QMessageBox.__init__(self, *args, **kwargs)
         self.setWindowTitle("Выбор матча")
         self.setWindowIcon(QtGui.QIcon("icons/match-16.png"))
-        self.setStandardButtons(QtWidgets.QMessageBox.Close)
+        self.button_close = self.addButton('Закрыть',
+                                           QtWidgets.QMessageBox.AcceptRole)
+        self.setDefaultButton(self.button_close)
 
         self.widgets = []
         self.content = QtWidgets.QWidget()
@@ -77,10 +75,8 @@ class ScrollMatches(QtWidgets.QMessageBox):
 
 
 def choose_matches_clicked():
-    """
-    загрузка матчей из бд
-    """
-    client = MongoClient("mongodb://34.91.248.129:27017/")
+
+    client = MongoClient("mongodb://localhost:27017/")
     db_conn = client["football"]
     col_conn = db_conn["gameIndicators"]
     matches = [x for x in col_conn.find({}, {"_id": 0})]
@@ -90,7 +86,8 @@ def choose_matches_clicked():
 
 def dark_mode():
     """
-    изменение темы окна
+    изменение цветовой темы окна
+    :yield: - тема
     """
     while True:
         MainWindow.ui.graphWidget.setBackground('#1C1C1C')
@@ -106,7 +103,7 @@ def dark_mode():
 
 class MyWindow(QtWidgets.QMainWindow):
     """
-    главное окно
+    класс окна приложения, задает интерфейс и перехватывает события
     """
     def __init__(self):
         super(MyWindow, self).__init__()
@@ -115,7 +112,8 @@ class MyWindow(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):
         """
-        перехват события закрытия окна
+        перехват события закрытия окна, вывод окна с вопросом при
+        возникновении события
         :param event: - событие
         """
         msg = QtWidgets.QMessageBox()
@@ -135,76 +133,13 @@ class MyWindow(QtWidgets.QMainWindow):
 
     def resizeEvent(self, event):
         """
-        перехват события изменения окна
+        перехват события изменения размера окна, изменение размеров элементов
         :param event: - событие
         """
-        self.w = self.size().width()
-        self.h = self.size().height()
-        #print(self.w, self.h)
-        self.ui.tabWidget.setGeometry(QtCore.QRect(
-            10, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
-        main_table_w = self.ui.tabWidget.width()
-        main_table_h = self.ui.tabWidget.height()
-        # print(main_table_w, main_table_h)
-
-        self.ui.tableWidget_1.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 1
-        self.ui.tableWidget_2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 2
-        self.ui.tableWidget_3.setGeometry(QtCore.QRect(
-            10, main_table_h + 70, self.w * 0.97, 111))  # показатели команд
-        self.ui.groupBox.setGeometry(QtCore.QRect(
-            10, main_table_h + 200, self.w * 0.97, 151))  # другие расчеты
-        self.ui.pushButton_2.setGeometry(QtCore.QRect(
-            main_table_w * 0.78, 30, 130, 25))  # кнопка сменить тему
-        self.ui.chooiseMatch.setGeometry(QtCore.QRect(
-            main_table_w * 0.78, 60, 130, 25))  # кнопка выбор матча
-        self.ui.graphicsView.setGeometry(QtCore.QRect(
-            0, 120, main_table_w / 2, main_table_h * 0.64))  # поле для левого графика
-        self.ui.graphWidget.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.64))  # левый график
-        self.ui.graphicsView2.setGeometry(QtCore.QRect(
-            main_table_w/2-10, 120, main_table_w / 2, main_table_h * 0.64))  # поле правого графика
-        self.ui.graphWidget2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.64))  # правый график
-        if main_table_w >= 1020:
-            self._centralize_widgets(main_table_w, main_table_h)
-
-    def _centralize_widgets(self, main_table_w, main_table_h):
-        """
-        расположение всех виджетов по центру окна
-        :param main_table_w: - ширина главной таблицы
-        :param main_table_h: - высота главной таблицы
-        """
-        indent = (self.w - main_table_w) / 2
-        self.ui.lbl.setGeometry(QtCore.QRect(indent + 230, 10, 600, 60))  # заголовок
-        self.ui.tabWidget.setGeometry(QtCore.QRect(
-            indent, 50, self.w * 0.97, self.h * 0.59))  # виджет с графиками
-        self.ui.tableWidget_1.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 1
-        self.ui.tableWidget_2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w - 10, main_table_h - 30))  # команда 2
-        self.ui.tableWidget_3.setGeometry(QtCore.QRect(
-            indent, main_table_h + 70, self.w * 0.97, 111))  # показатели
-        self.ui.groupBox.setGeometry(QtCore.QRect(
-            indent, main_table_h + 200, self.w * 0.97, 151))  # другие расчет
-        self.ui.graphicsView.setGeometry(QtCore.QRect(
-            0, 120, main_table_w / 2, main_table_h * 0.64))  # поле для левого графика
-        self.ui.graphWidget.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.64))  # левый график
-        self.ui.graphicsView2.setGeometry(QtCore.QRect(
-            main_table_w / 2 - 10, 120, main_table_w / 2, main_table_h * 0.64))  # поле правого графика
-        self.ui.graphWidget2.setGeometry(QtCore.QRect(
-            0, 0, main_table_w / 2, main_table_h * 0.64))  # правый график
-
-
-# class Popup(QtWidgets.QWidget):
-#     def __init__(self):
-#         super(Popup, self).__init__()
-#     def p(self, e):
-#         dc = QtGui.QPainter()
-#         dc.drawLine(0, 0, 100, 100)
-#         dc.drawLine(100, 0, 0, 100)
+        width = self.size().width()
+        height = self.size().height()
+        self.ui.scroll_area.setGeometry(
+            QtCore.QRect((width - 850) / 2 + 15, 0, 820, height))
 
 
 if __name__ == "__main__":

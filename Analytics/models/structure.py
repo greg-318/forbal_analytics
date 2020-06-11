@@ -1,6 +1,9 @@
 import sys
-sys.path.extend(["../../DataBase/"])
-import mongo_default as mongod
+import pathlib
+
+path = '\\'.join(str(pathlib.Path().absolute()).split(r'\\')[:-2])
+sys.path.append(path)
+from DataBase import mongo_default as mongod
 
 
 class TypedProperty:
