@@ -17,7 +17,7 @@ async def get_understat_teams(league, year):
         list_of_teams = []
         for team in teams:
             team_dict = {**team_model.Team._fields}
-            team_form = {"name": f'{year}_{team["title"]}'}
+            team_form = {"name": f'{int(year)+1}_{team["title"]}'}
             for key in team["history"][0].keys():
                 if key not in ("h_a", "date", "result", "ppda", "ppda_allowed"):
                     value = sum([x[key] for x in team["history"]])
