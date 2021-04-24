@@ -1,4 +1,5 @@
 import json
+from pymongo import MongoClient
 
 liga_year_matches = {
 
@@ -9954,3 +9955,57 @@ liga_year_matches = {
     ],
 
 }
+
+d = {}
+for key,val in liga_year_matches.items():
+    if "2019" in key:
+        d[key] = val
+print(d)
+
+
+
+
+
+# d = []
+# client = MongoClient('mongodb://user:mongouser@35.204.218.42:27017/?authSource=football')
+# db_conn = client["football"]
+# col_conn = db_conn["gameIndicators"]
+# for i in col_conn.find():
+#     d.append(i['match'])
+# print(d)
+# print(len(d))
+
+#
+# dictt = {}
+#
+# j = 0
+#
+# f = []
+# for key, val in liga_year_matches.items():
+#     for i in val:
+#         f.append(i)
+# dif = set(db).difference(set(f))
+#     # dif = set(db).difference(set(val))
+#     #
+#     # if len(dif) == 0:
+#     #     continue
+#     # j += len(dif)
+#     # dictt[key] = list(dif)
+#
+# d = {'intersection_name': list(dif)}
+# with open("intersection_match_db_vs_file.json", "w") as write_file:
+#     json.dump(d, write_file)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
